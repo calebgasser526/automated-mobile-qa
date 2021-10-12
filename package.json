@@ -1,0 +1,19 @@
+{
+  "name": "appium-test-stuff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test-android": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-android.test.js'",
+    "test-ios": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-ios.test.js'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.4",
+    "mitmproxy": "^2.1.2",
+    "mocha": "^9.0.3",
+    "webdriverio": "^7.9.0"
+  }
+}
