@@ -2,6 +2,8 @@
 
 You must have the Android/iOS project built and the corrisponding emulators you want to use for testing installed. The installation of emulators can be managed in android studio or xcode respectively.
 
+Android/IOS setup docs: https://moveinc.atlassian.net/wiki/spaces/Mobile/pages/103134979632/Setup+of+iOS+and+Android+Dev+Environment?preview=/103134979632/115808276054/Screen+Shot+2021-03-31+at+10.11.10+AM.png
+
 # Android Setup
 
 Start Emulator with proxy
@@ -28,6 +30,10 @@ adb unroot
 You don't need to setup the emulator seperately, appium should manage and start that for you. 
 
 # Settings and Options for Appium
+Appium Desktop Inspector Version: 2021.9.1 https://github.com/appium/appium-inspector/releases
+Appium Server Version: 1.22.0 https://github.com/appium/appium-desktop/releases/tag/v1.22.0
+Appium Server VIA npm: http://appium.io/docs/en/about-appium/getting-started/
+
  You will want to put the full path for the `app` setting
 #### iOS
 
@@ -60,7 +66,7 @@ For `appActivity` and `appPackage`, these will need to point to where the app is
 ```
 # Capturing Network traffic
 
-#### Note: You must install mitmproxy version 6.0.0 via pip
+#### Note: You must install mitmproxy version 7.0.2 via pip
 
 https://appiumpro.com/editions/63-capturing-android-emulator-network-traffic-with-appium
 
