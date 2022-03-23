@@ -1,1 +1,8 @@
 node_modules
+android-local-sdk
+.mocharc.js
+.http-mitm-proxy
+.knownPackages
+*.swp
+*.swo
+*.0
