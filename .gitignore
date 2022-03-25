@@ -6,3 +6,4 @@ android_local_sdk
 *.swp
 *.swo
 *.0
+.DS_Store
