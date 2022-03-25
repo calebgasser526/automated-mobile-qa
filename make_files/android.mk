@@ -10,7 +10,7 @@ ANDROID_BUILD_TOOLS = $(ANDROID_LOCAL_SDK)/build-tools
 
 .PHONY: run-android 
 run-android: | $(ANDROID_AVD) $(ANDROID_EMULATOR) $(ANDROID_IMAGE)
-	$(ANDROID_EMULATOR) -avd $(NAME) -writable-system -netdelay none -netspeed full -dns-server 8.8.8.8
+	$(ANDROID_EMULATOR) -avd $(NAME) -writable-system -netdelay none -netspeed full -dns-server 8.8.8.8 -http-proxy http://$(PROXY)
 
 $(ANDROID_LOCAL_SDK):
 	mkdir $@ 

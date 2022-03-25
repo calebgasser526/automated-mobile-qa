@@ -1,25 +1,30 @@
 {
-  "proxy": {
-    "address":"127.0.0.1",
-    "port": "9595"
+  "config": {
+    "target": "android",
+    "proxy" : {
+      "ip": "127.0.0.1",
+      "port": "9595"
+    },
+    "android": {
+      "template": "android-30.tmpl"
+    },
+    "ios": {
+
+    }
   },
-  "android": {
-    "template": "android-30.tmpl"
-  },
-  "ios": {},
   "name": "appium-runner",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
-    "android": "make run-android ANDROID_TEMPLATE=$npm_package_android_template PROXY=$npm_package_proxy_address:$npm_package_proxy_port &",
+    "android": "make run-android ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_ip:$npm_package_config_proxy_port &",
     "ios": "make run-ios",
     "appium": "appium",
-    "proxy" : "make android-inject-cert ANDROID_TEMPLATE=$npm_package_android_template PROXY=$npm_package_proxy_address:$npm_package_proxy_port && node ./src/main.js --port $npm_package_proxy_port",
+    "proxy" : "make android-inject-cert ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_address && node ./src/main.js --port $npm_package_config_proxy_port",
     "test:android": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-android.test.js'",
     "test:ios": "npm run start:ios && npm run start:appium && ./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-ios.test.js'",
     "gen-cert": "node ./src/gen-cert.js",
-    "clean": "make clean TEMPLATE=$npm_package_android_template"
+    "clean": "make clean"
   },
   "keywords": [],
   "author": "",

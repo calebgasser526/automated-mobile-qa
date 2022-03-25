@@ -6,9 +6,10 @@ ADB_COMMANDS = "root" \
 							 "remount" \
 							 "push $(1) /system/etc/security/cacerts/" \
 							 "shell chmod 664 /system/etc/security/cacerts/$(1)" \
-							 "reboot" \
-							 "shell settings put global http_proxy $(PROXY)" \
-							 "shell svc wifi enable"
+							 "reboot"
+							 # "shell svc wifi enable"
+							 # "shell settings put global http_proxy $(PROXY)" \
+
 ANDROID_CERT=$(shell openssl x509 -inform PEM -subject_hash_old -in $(CERT) | head -n 1).0
 
 $(CERT):
