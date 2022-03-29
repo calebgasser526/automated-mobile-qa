@@ -14,6 +14,9 @@
   - [Tools](#tools)
   - [Structure](#structure)
   - [Resources](#resources)
+    + [General](#general)
+    + [Appium](#appium)
+    + [Proxy](#proxy)
     + [Android](#android-1)
 
 <!-- vim-markdown-toc -->
@@ -54,8 +57,18 @@ TODO
 
 ### Resources
 
+#### General
+
 * [GNU Make](https://www.gnu.org/software/make/manual/html_node/index.html)
+
+#### Appium
+
 * [Appium](https://appium.io/docs/en/about-appium/intro/)
+
+#### Proxy
+
+* [http-mimt-proxy](https://github.com/joeferner/node-http-mitm-proxy)
+* [SSL/TSL Basics](https://www.tutorialspoint.com/network_security/network_security_transport_layer.htm)
 
 #### Android
 
@@ -63,5 +76,6 @@ TODO
 * [Debugger (ADB)](https://developer.android.com/studio/command-line/adb)
 * [AVD Manager](https://developer.android.com/studio/command-line/avdmanager)
 * [SDK Manager](https://developer.android.com/studio/command-line/sdkmanager)
+* [Installing CA for proxy on android (this is for mimtproxy but the same concept applies to the one used in this project)](https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/)
 
 
