@@ -17,7 +17,7 @@
   "scripts": {
     "android": "make run-android ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_ip:$npm_package_config_proxy_port &",
     "ios": "make run-ios",
-    "appium": "appium",
+    "appium": "make appium ANDROID_TEMPLATE=$npm_package_config_android_template",
     "inject-cert": "make android-inject-cert ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_address ",
     "proxy": "npm run inject-cert && node ./src/main.js --port $npm_package_config_proxy_port",
     "test:android": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-android.test.js'",

@@ -4,7 +4,10 @@ include $(MAKE_FILES)/variables.mk
 include $(ANDROID_TEMPLATE_DIR)/$(ANDROID_TEMPLATE)
 include $(MAKE_FILES)/android.mk
 include $(MAKE_FILES)/iOS.mk 
-include $(MAKE_FILES)/proxy.mk 
+include $(MAKE_FILES)/proxy.mk
+
+appium:
+	appium 
 
 .PHONY: clean
 clean:

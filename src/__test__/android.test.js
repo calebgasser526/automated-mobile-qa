@@ -10,7 +10,7 @@ const opts = {
     "platformName": "Android",
     "platformVersion": "11",
     "deviceName": "Android Emulator",
-    "app": "/Users/cgasser/StudioProjects/Android/apps/BuyRent/build/outputs/apk/core/debug/BuyRent-core-debug.apk",
+    "app": "./BuyRent-core-debug.apk",
     "appPackage": "com.move.realtor.qa",
     "appActivity": "com.move.realtor.splash.SplashActivity",
     "appWaitActivity": "com.move.realtor.onboarding.OnBoardingActivity",

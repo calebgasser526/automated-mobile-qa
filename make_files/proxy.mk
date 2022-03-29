@@ -11,7 +11,7 @@ ADB_COMMANDS = "root" \
 							 # "shell settings put global http_proxy $(PROXY)" \
 
 ANDROID_CERT=$(shell openssl x509 -inform PEM -subject_hash_old -in $(CERT) | head -n 1).0
-NEEDS_CERT=$(shell adb shell 'if [ -f /system/etc/security/cacerts/$(ANDROID_CERT) ]; then echo "false"; else echo "true"; fi')
+NEEDS_CERT=$(shell $(ADB) shell 'if [ -f /system/etc/security/cacerts/$(ANDROID_CERT) ]; then echo "false"; else echo "true"; fi')
 
 $(CERT):
 	npm run gen-cert
@@ -29,6 +29,6 @@ android-inject-cert: $(ANDROID_CERT)
 				ADB_BOOTED=$$(adb wait-for-device shell getprop sys.boot_completed | tr -d '\r'); \
  			done; \
 			sleep 2; \
-			adb wait-for-device $$item; \
+			$(ADB) wait-for-device $$item; \
 		done; \
 	fi
