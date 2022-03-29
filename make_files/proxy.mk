@@ -24,7 +24,7 @@ android-inject-cert: $(ANDROID_CERT)
 	if $(NEEDS_CERT); then \
 		for item in $(call ADB_COMMANDS,$<); do \
 			ADB_BOOTED=$$(adb wait-for-device shell getprop sys.boot_completed | tr -d '\r'); \
-			while [ $$ADB_BOOTED != 1 ]; do \
+			while [[ $$ADB_BOOTED != 1 ]]; do \
 				echo "Waiting for device to become available..." && sleep 2; \
 				ADB_BOOTED=$$(adb wait-for-device shell getprop sys.boot_completed | tr -d '\r'); \
  			done; \
