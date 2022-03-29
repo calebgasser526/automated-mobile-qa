@@ -9,3 +9,4 @@ include $(MAKE_FILES)/proxy.mk
 .PHONY: clean
 clean:
 	rm -fr $(ANDROID_LOCAL_SDK)
+	rm -fr .http-mitm-proxy
