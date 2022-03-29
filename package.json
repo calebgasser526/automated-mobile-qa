@@ -29,6 +29,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "appium": "^1.22.3",
     "chai": "^4.3.4",
     "http-mitm-proxy": "^0.9.0",
     "mocha": "^9.0.3",
