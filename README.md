@@ -2,6 +2,21 @@
 
 ## Table of Contents
 
+<!-- vim-markdown-toc GFM -->
+
+* [Getting Started](#getting-started)
+  - [Requirments](#requirments)
+* [Step-by-step](#step-by-step)
+  - [Android](#android)
+  - [iOS](#ios)
+* [Writing Tests](#writing-tests)
+* [Project Description](#project-description)
+  - [Tools](#tools)
+  - [Structure](#structure)
+  - [Resources](#resources)
+    + [Android](#android-1)
+
+<!-- vim-markdown-toc -->
 
 ## Getting Started
 
@@ -36,3 +51,17 @@ TODO
 
 ### Structure
 TODO
+
+### Resources
+
+* [GNU Make](https://www.gnu.org/software/make/manual/html_node/index.html)
+* [Appium](https://appium.io/docs/en/about-appium/intro/)
+
+#### Android
+
+* [Command line tools](https://developer.android.com/studio/command-line)
+* [Debugger (ADB)](https://developer.android.com/studio/command-line/adb)
+* [AVD Manager](https://developer.android.com/studio/command-line/avdmanager)
+* [SDK Manager](https://developer.android.com/studio/command-line/sdkmanager)
+
+
