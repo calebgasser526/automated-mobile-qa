@@ -1,5 +1,4 @@
 const wdio = require("webdriverio");
-const Mitmproxy = require('mitmproxy').default
 const expect = require("chai").expect;
 
 
@@ -12,44 +11,22 @@ const opts = {
     "platformName": "iOS",
     "platformVersion": "15.0",
     "deviceName": "iPhone Simulator",
-    "app": "",
+    "app": "./Realtor.com.app",
     "automationName": "XCUITest"
   }
 };
 let proxy, driver
 let interceptedMessages = []
-
+let certificatePath = path.resolve('/.http-mitm-proxy/certs/', 'ca.pem')
+let certificate = await fs.readFile(certificatePath)
+await driver.executeScript('mobile:installCertificate', [{content: certificate.toString('base64')}])
 describe("iOS", () => {
-  // TODO: Mocha gobal before hook research
   before(async () => {
-    // proxy/mitmproxy setup
-    let requestHandler = (message) => {
-      // TODO
-      // Write out network data for later testing.
-      // let req = message.request
-      // console.log('************************************')
-      // console.log('mitmproxy intercepted a requests')
-      // console.log(message)
-      // console.log(req.method)
-      // TODO
-      // api.segment.io
-      // Catch batch of segments
-      // Next batch of segemets could cause issues?
-      // console.log(req.rawUrl)
-      // console.log(message.requestBody.toString())
-      // console.log('************************************')
-      interceptedMessages.push(message)
-    }
-
-    // // start mitmproxy
-    proxy = await Mitmproxy.Create(requestHandler, [], true, true)
   });
 
   after(async () => {
-    // Wait 10 seconds before shutting down the app/proxy to make sure we have all the messages.
     await new Promise(resolve => setTimeout(resolve, 50000));
     await driver.deleteSession();
-    await proxy.shutdown();
   });
 
   describe("iOS Test", () => {

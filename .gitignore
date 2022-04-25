@@ -8,3 +8,5 @@ android_local_sdk
 *.swn
 *.0
 .DS_Store
+*.apk
+*.app

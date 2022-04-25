@@ -3,7 +3,7 @@
     "target": "android",
     "proxy": {
       "ip": "127.0.0.1",
-      "port": "9595"
+      "port": "8181"
     },
     "android": {
       "template": "android-30.tmpl"
@@ -16,12 +16,12 @@
   "main": "main.js",
   "scripts": {
     "android": "make run-android ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_ip:$npm_package_config_proxy_port &",
-    "ios": "make run-ios",
+    "ios": "make run-ios ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_ip:$npm_package_config_proxy_port",
     "appium": "appium",
-    "inject-cert": "make android-inject-cert ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_address ",
+    "inject-cert": "make android-inject-cert ANDROID_TEMPLATE=$npm_package_config_android_template PROXY=$npm_package_config_proxy_ip:$npm_package_config_proxy_port",
     "proxy": "npm run inject-cert && node ./src/main.js --port $npm_package_config_proxy_port",
-    "test:android": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-android.test.js'",
-    "test:ios": "npm run start:ios && npm run start:appium && ./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-ios.test.js'",
+    "test:android": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-android.test'",
+    "test:ios": "./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/segment-data-ios.test.js'",
     "gen-cert": "node ./src/gen-cert.js",
     "clean": "make clean ANDROID_TEMPLATE=$npm_package_config_android_template"
   },
@@ -32,6 +32,7 @@
     "appium": "^1.22.3",
     "chai": "^4.3.4",
     "http-mitm-proxy": "^0.9.0",
+    "mitmproxy": "^2.1.2",
     "mocha": "^9.0.3",
     "webdriverio": "^7.9.0"
   }

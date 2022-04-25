@@ -1,4 +1,5 @@
-CERT = ./.http-mitm-proxy/certs/ca.pem
+# CERT = ./.http-mitm-proxy/certs/ca.pem
+CERT = ~/.mitmproxy/mitmproxy-ca-cert.cer
 ADB_COMMANDS = "root" \
 							 "shell avbctl disable-verification" \
 							 "reboot" \
