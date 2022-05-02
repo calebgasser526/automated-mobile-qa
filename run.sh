@@ -29,8 +29,13 @@ function init(){
 | If this  is your first time running the application then start up may take a while.|
 ======================================================================================
 "
-  echo "Creating log directory $LOGS if not present"
+  echo "[==] Creating log directory $LOGS if not present"
   mkdir -p $LOGS
+
+  if [[ ! -d "./.venv" ]]; then
+    echo "[==] Creating python virtual environment."
+    python3 -m venv .venv
+  fi
 
   source ./.venv/bin/activate
   echo "[==] Installing python depedancies"
