@@ -10,3 +10,4 @@ android_local_sdk
 .DS_Store
 *.apk
 *.app
+mochawesome-report
