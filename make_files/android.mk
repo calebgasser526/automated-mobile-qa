@@ -10,7 +10,6 @@ ANDROID_BUILD_TOOLS = $(ANDROID_LOCAL_SDK)/build-tools
 
 .PHONY: run-android 
 run-android: | $(ANDROID_AVD) $(ANDROID_EMULATOR) $(ANDROID_IMAGE)
-	@clear
 	@echo "Starting emulator"
 	@echo "Using avd:  $(NAME)"
 	@echo "Proxying requests to:  $(PROXY)"
