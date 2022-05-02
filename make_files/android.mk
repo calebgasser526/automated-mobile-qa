@@ -14,7 +14,7 @@ run-android: | $(ANDROID_AVD) $(ANDROID_EMULATOR) $(ANDROID_IMAGE)
 	@echo "Starting emulator"
 	@echo "Using avd:  $(NAME)"
 	@echo "Proxying requests to:  $(PROXY)"
-	$(ANDROID_EMULATOR) -avd $(NAME) -writable-system -netdelay none -netspeed full -debug-proxy -http-proxy http://$(PROXY)
+	$(ANDROID_EMULATOR) -avd $(NAME) -writable-system -netdelay none -netspeed full -http-proxy http://$(PROXY) &> /dev/null
 
 $(ANDROID_LOCAL_SDK):
 	mkdir $@ 

@@ -1,5 +1,4 @@
-# CERT = ./.http-mitm-proxy/certs/ca.pem
-CERT = ~/.mitmproxy/mitmproxy-ca-cert.cer
+CERT=~/.mitmproxy/mitmproxy-ca-cert.cer
 ADB_COMMANDS = "root" \
 							 "shell avbctl disable-verification" \
 							 "reboot" \
@@ -19,7 +18,6 @@ NEEDS_CERT=$(shell if adb emu; then \
 					 fi)
 
 $(CERT):
-	npm run start-env
 	npm run gen-cert
 
 $(ANDROID_CERT): $(CERT) install_cert
