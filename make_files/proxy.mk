@@ -39,6 +39,6 @@ android-inject-cert: $(ANDROID_CERT)
 				ADB_BOOTED=$$(adb wait-for-device shell getprop sys.boot_completed | tr -d '\r'); \
 			done; \
 			sleep 2; \
-			adb wait-for-device $$item; \
+			$(ADB) wait-for-device $$item; \
 		done; \
 	fi
