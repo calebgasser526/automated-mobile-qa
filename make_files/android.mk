@@ -9,12 +9,9 @@ ANDROID_PLATFORM_TOOLS = $(ANDROID_LOCAL_SDK)/platform-tools
 ANDROID_BUILD_TOOLS = $(ANDROID_LOCAL_SDK)/build-tools 
 ADB = $(ANDROID_PLATFORM_TOOLS)/adb
 
-.PHONY: run-android 
-run-android: | $(ANDROID_AVD) $(ANDROID_EMULATOR) $(ANDROID_IMAGE)
-	@echo "Starting emulator"
-	@echo "Using avd:  $(NAME)"
-	@echo "Proxying requests to:  $(PROXY)"
-	$(ANDROID_EMULATOR) -avd $(NAME) -writable-system -netdelay none -netspeed full -http-proxy http://$(PROXY) &> /dev/null
+.PHONY: start-emulator
+start-emulator: | $(ANDROID_AVD) $(ANDROID_EMULATOR) $(ANDROID_IMAGE)
+	$(ANDROID_EMULATOR) -avd $(NAME) -writable-system -netdelay none -netspeed full -http-proxy http://$(PROXY)  &> /dev/null &
 
 $(ANDROID_LOCAL_SDK):
 	mkdir $@ 

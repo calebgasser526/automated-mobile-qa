@@ -1,3 +1,0 @@
-.PHONY: appium
-appium:
-	appium

@@ -1,4 +1,5 @@
 #!/bin/bash
 adb emu kill
 killall Simulator
-pkill node
+kill $(pgrep -f mitm)
+kill $(pgrep -f mocha)
