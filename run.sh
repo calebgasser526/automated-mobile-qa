@@ -1,4 +1,5 @@
 #!/bin/bash
+PYTHON_VERSION=3.8.13
 processes=()
 CERT_FILE=~/.mitmproxy/mitmproxy-ca-cert.cer
 TARGET="anroid"
@@ -36,6 +37,11 @@ function init(){
   networksetup -setsecurewebproxystate "${PROXY_TARGET}" off
 
   mkdir -p $LOGS
+  # install wget
+  if ! command -v wget &> /dev/null; then
+    echo "[==] Installing wget."
+    brew install wget &> /dev/null
+  fi
 
   if ! command -v pyenv &> /dev/null; then
     echo "[==] Installing pyenv."
@@ -66,12 +72,16 @@ function init(){
     fi
   fi
 
-  if ! command -v python3.6 &> /dev/null; then
-    echo "[==] Installing python 3.6."
-    pyenv install 3.6.15 #&> /dev/null
+  pyenv global $PYTHON_VERSION &> /dev/null 
+
+  if [[ "$(python --version | awk '/Python/{print $NF}')" != "${PYTHON_VERSION}" ]]; then
+    # Change python version. 
+    echo "[==] Installing python version $PYTHON_VERSION"
+    pyenv install $PYTHON_VERSION &> /dev/null
+    pyenv global $PYTHON_VERSION &> /devn/null 
   fi
 
-  pyenv global 3.6.15
+  echo "[==] Using python version $PYTHON_VERSION"
 
   if [[ ! -d "./.venv" ]]; then
     echo "[==] Creating python virtual environment."
@@ -80,12 +90,13 @@ function init(){
 
   if [[ ! -d "./.venv/lib/python3.9/site-packages/mitmproxy" ]]; then 
     echo "[==] Installing python depedancies"
-    . ./.venv/bin/activate && pip install -r requirments.txt &> $LOGS/pip_install.log 
+    . ./.venv/bin/activate && pip install -r requirments.txt &> /dev/null 
   fi
   
   if [[ ! -d "./node_modules" ]]; then 
     echo "[==] Installing node depedancies"
-    npm install &> $LOGS/npm_install.log
+    npm install -g appium &> /dev/null
+    npm install &> /dev/null 
   fi
 }
 
@@ -106,31 +117,33 @@ function start_server(){
   processes+=($!)
 }
 
-function run_tests(){
-  echo "[==] Starting tests."
+function gen_cert(){
+  echo "[==] Generating certificate."
   check_for_android
-
-  . ./.venv/bin/activate && make android-inject-cert &> $LOGS/inject_cert.log 
-
+  start_proxy
+  . ./.venv/bin/activate && make android-inject-cert &> /dev/null 
+  stop_proxy
   if [[ ! -f $CERT_FILE ]]; then 
     echo "[EE] Certifciate generation failed!"
     clean_up
     exit 1
   fi
-  
-  echo "[==] Installing certificate to system."
-	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $CERT_FILE &> $LOG/add_cert.log 
+  echo "[==] Certificate generated successfully."
+}
+
+function run_tests(){
+  echo "[==] Starting tests."
+
+  gen_cert
+
+  if ! security find-certificate -c "mitmproxy" -a &> /dev/null; then  
+    echo "[==] Installing certificate to system."
+	  sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $CERT_FILE &> /dev/null 
+  fi
 
   check_for_android
 
-  echo "[==] Proxy: $PROXY_IP:$PROXY_PORT"
-  echo "[==] Current Proxy(HTTP): $ORIG_PROXY_IP:$ORIG_PROXY_PORT"
-  echo "[==] Current Proxy(HTTPS): $ORIG_SECURE_PROXY_IP:$ORIG_SECURE_PROXY_PORT"
-  echo "[==] Setting proxy for iOS tests."
-  networksetup -setwebproxy "${PROXY_TARGET}" $PROXY_IP $PROXY_PORT 
-  networksetup -setsecurewebproxy "${PROXY_TARGET}" $PROXY_IP $PROXY_PORT 
-  networksetup -setwebproxystate "${PROXY_TARGET}" on
-  networksetup -setsecurewebproxystate "${PROXY_TARGET}" on
+  start_proxy
 
   echo "[==] Running tests."
   ./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/data.test.js' --reporter mochawesome
@@ -140,13 +153,24 @@ function run_tests(){
   echo "[==] Tests finished."
 }
 
-function clean_up(){
+function start_proxy(){
+  echo "[==] Starting proxy."
+  networksetup -setwebproxy "${PROXY_TARGET}" $PROXY_IP $PROXY_PORT 
+  networksetup -setsecurewebproxy "${PROXY_TARGET}" $PROXY_IP $PROXY_PORT 
+  networksetup -setwebproxystate "${PROXY_TARGET}" on
+  networksetup -setsecurewebproxystate "${PROXY_TARGET}" on
+}
 
+function stop_proxy(){
   echo "[==] Restoring proxy settings."
   networksetup -setwebproxy "${PROXY_TARGET}" $ORIG_PROXY_IP $ORIG_PROXY_PORT 
   networksetup -setsecurewebproxy "${PROXY_TARGET}" $ORIG_SECURE_PROXY_IP $ORIG_SECURE_PROXY_PORT 
   networksetup -setwebproxystate "${PROXY_TARGET}" off
   networksetup -setsecurewebproxystate "${PROXY_TARGET}" off
+}
+
+function clean_up(){
+  stop_proxy
 
   for p in "${processes[@]}"
   do
@@ -154,7 +178,7 @@ function clean_up(){
   done
   adb emu kill &> /dev/null
   killall Simulator &> /dev/null
-  kill $(pgrep -f mitm) &> /dev/null
+  kill -9 $(pgrep -f mitm) &> /dev/null
   kill $(pgrep -f mocha) &> /dev/null
   deactivate &> /dev/null
   pkill -P $$
