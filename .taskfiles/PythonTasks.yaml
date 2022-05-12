@@ -1,0 +1,33 @@
+---
+version: "3"
+
+tasks:
+  default:
+    deps: [depends]
+
+  depends:
+    deps: [virt]
+    desc: Install python dependencies into the virtual environment.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirments.txt
+    status:
+      - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/mitmproxy
+
+  virt:
+    desc: Create python virtual environment.
+    deps: [version]
+    cmds:
+      - python -m venv .venv
+    status:
+      - test -d {{.PROJECT_DIR}}/.venv
+
+  version:
+    desc: Install and set python version {{.PYTHON_VERSION}}.
+    cmds:
+      - pyenv install -s {{.PYTHON_VERSION}}
+      - pyenv global {{.PYTHON_VERSION}}
+    status:
+    preconditions:
+      - sh: command -v pyenv
+        msg: |
+          Pyenv is not installed. Have you run 'task install'?
