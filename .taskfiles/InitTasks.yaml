@@ -1,0 +1,59 @@
+---
+version: "3"
+vars:
+
+tasks:
+
+  all:
+    desc: Initalize all required dependencies of the project.
+    deps: [precommit]
+
+
+  precommit:
+    desc: Initalize pre-commit
+    deps: [python]
+    cmds:
+      - pre-commit install --install-hooks
+    preconditions:
+      - command -v pre-commit
+
+  python:
+    desc: Set python to version {{.VERSION}}
+    deps: [python_version]
+    cmds:
+      - pyenv global {{.PYTHON_VERSION}}
+    preconditions:
+      - command -v pyenv
+
+  python_version:
+    desc: Install python version {{.PYTHON_VERSION}}.
+    deps: [brew]
+    cmds:
+      - pyenv install -s {{.PYTHON_VERSION}}
+      - pyenv global {{.PYTHON_VERSION}}
+    preconditions:
+      - command -v pyenv
+
+  brew:
+    desc: Install dependencies with Brew
+    cmds:
+      - brew install {{.DEPS}} -q {{.CLI_ARGS}}
+    preconditions:
+      - sh: command -v brew
+        msg: |
+          Homebrew is not installed. Head over to https://brew.sh to get up and running.
+    vars:
+      DEPS: >-
+        wget
+        pyenv
+        pre-commit
+        prettier
+        yamllint
+        go
+    status:
+      - command -v wget
+      - command -v pyenv
+      - command -v prettier
+      - command -v pre-commit
+      - command -v yamllint
+      - command -v go

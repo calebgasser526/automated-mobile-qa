@@ -1,0 +1,19 @@
+---
+version: "3"
+
+vars:
+  PYTHON_VERSION: "3.8.13"
+  CERT_FILE: "$HOME/.mitmproxy/mitmproxy-ca-cert.cer"
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+
+includes:
+  init: .taskfiles/InitTasks.yaml
+
+tasks:
+
+  default:
+    cmds:
+      - task: run
+  run:
+    deps: [init:all]

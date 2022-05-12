@@ -1,4 +1,4 @@
-# Mobile Tracking Tester 
+# Mobile Tracking Tester
 
 ## Table of Contents
 
@@ -7,17 +7,13 @@
 * [Getting Started](#getting-started)
   - [Requirments](#requirments)
 * [Step-by-step](#step-by-step)
-  - [Android](#android)
-  - [iOS](#ios)
 * [Writing Tests](#writing-tests)
-* [Project Description](#project-description)
-  - [Tools](#tools)
-  - [Structure](#structure)
+  - [Appium Inspector](#appium-inspector)
   - [Resources](#resources)
     + [General](#general)
     + [Appium](#appium)
     + [Proxy](#proxy)
-    + [Android](#android-1)
+    + [Android](#android)
 
 <!-- vim-markdown-toc -->
 
@@ -31,29 +27,37 @@
 |NodeJS   |>=14.15.4 |          |
 |NPM      |>=6.14.10 |          |
 |Xcode    |>=13      |          |
+|iOS app or android apk |       |      |
+| Appium Inspector (Optional, but highly recommended) |         |          |
 
 ##  Step-by-step
 
-### Android
-1. Start android `npm run android`
-2. Start proxy `npm run proxy`
-3. Start appium `npm run appium`
-4. Run tests `npm run test:andriod`
+1. Clone this repository.
+2. Place iOS and Android applications in this project folder. (Names need to be `BuyRent-core-debug.apk` and `Realtor.com.app` respectively).
+3. Run the application with `./run.sh`. The first run will take a while.
+4. Results of tests will be opened in your browser.
 
-### iOS
-TODO
 
 ## Writing Tests
-TODO
 
-## Project Description
-TODO
+1. [Download and install appium inspector.](https://github.com/appium/appium-inspector/releases)
+2. Start your respective emulator.
+  - Android: Run 'make start-emulator` in your terminal. Make sure you're in the project directory.
+![](./docs/imgs/make-start-emulator.png)
+  - iOS: Run `open -a Simulator.app` in your terminal.
+![](./docs/imgs/start-ios-emulator.png)
+3. Start the appium server in a seperate console with the command `appium`
+![](./docs/imgs/start-appium.png)
+4. Copy the `capabilites` section from `src/__test__/appium.test.js` for android (`android_opts`) or ios (`ios_opts`) respectively.
+5. Paste the configuration into `JSON Representation` of the appium inspector. **Make sure to save it!**
+![](docs/imgs/json-rep.)
+6. Make sure `Remote Path` of appium inspector is set to `/wd/hub`
+7. Start the appium inspector and use it to generate the code you need for `appium.test.js`
+  - To record your actions and generate code, enable the "eye" icon at the top of the inspector.
+8. Follow the format of exsisting tests, making sure to add messages to the queue in the `before` clause.
+9. Test the captured network data in the `data.test.js` following the format of exsisting tests.
 
-### Tools
-TODO
-
-### Structure
-TODO
+### Appium Inspector
 
 ### Resources
 
@@ -67,8 +71,7 @@ TODO
 
 #### Proxy
 
-* [http-mimt-proxy](https://github.com/joeferner/node-http-mitm-proxy)
-* [SSL/TSL Basics](https://www.tutorialspoint.com/network_security/network_security_transport_layer.htm)
+* [Installing CA for proxy on android](https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/)
 
 #### Android
 
@@ -76,6 +79,3 @@ TODO
 * [Debugger (ADB)](https://developer.android.com/studio/command-line/adb)
 * [AVD Manager](https://developer.android.com/studio/command-line/avdmanager)
 * [SDK Manager](https://developer.android.com/studio/command-line/sdkmanager)
-* [Installing CA for proxy on android (this is for mimtproxy but the same concept applies to the one used in this project)](https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/)
-
-
