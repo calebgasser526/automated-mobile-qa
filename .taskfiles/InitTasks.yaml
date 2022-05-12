@@ -1,38 +1,32 @@
 ---
 version: "3"
-vars:
+
+includes:
+  python: ./PythonTasks.yaml
 
 tasks:
-
   all:
     desc: Initalize all required dependencies of the project.
-    deps: [precommit]
+    deps: [precommit, node, python:depends]
 
+  node:
+    desc: Install nodejs dependencies
+    cmds:
+      - npm install -g appium
+      - npm install
+    status:
+      - command -v appium
+      - test -d {{.PROJECT_DIR}}/node_modules
 
   precommit:
     desc: Initalize pre-commit
-    deps: [python]
-    cmds:
-      - pre-commit install --install-hooks
-    preconditions:
-      - command -v pre-commit
-
-  python:
-    desc: Set python to version {{.VERSION}}
-    deps: [python_version]
-    cmds:
-      - pyenv global {{.PYTHON_VERSION}}
-    preconditions:
-      - command -v pyenv
-
-  python_version:
-    desc: Install python version {{.PYTHON_VERSION}}.
     deps: [brew]
     cmds:
-      - pyenv install -s {{.PYTHON_VERSION}}
-      - pyenv global {{.PYTHON_VERSION}}
+      - pre-commit install --install-hooks
+    status:
+      - test -f {{.PROJECT_DIR}}/.git/hooks/pre-commit
     preconditions:
-      - command -v pyenv
+      - command -v pre-commit
 
   brew:
     desc: Install dependencies with Brew
