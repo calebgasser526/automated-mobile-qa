@@ -23,8 +23,8 @@
 
 ## Up coming changes.
 
-- [] Migrate from javascript to python. This is needed due to the proxy wrapper for javascript being outdated.
-- [] Migrate build system from bash/make to task. A concurrent, easier to use build tool.
+- [ ] Migrate from javascript to python. This is needed due to the proxy wrapper for javascript being outdated.
+- [ ] Migrate build system from bash/make to task. A concurrent, easier to use build tool.
 
 ## Getting Started
 
