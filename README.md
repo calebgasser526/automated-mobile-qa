@@ -1,6 +1,13 @@
+<div align="center">
+
 # Mobile Tracking Tester
 
-## Table of Contents
+![GitHub language count](https://img.shields.io/github/languages/count/calebgasser526/automated-mobile-qa)
+![Lines of code](https://img.shields.io/tokei/lines/github/calebgasser526/automated-mobile-qa)
+
+</div>
+
+## 📄 Table of Contents
 
 <!-- vim-markdown-toc GFM -->
 
@@ -9,7 +16,7 @@
   - [Requirments](#requirments)
 - [Running Tests Step-by-step](#running-tests-step-by-step)
 - [Writing Tests Step-by-Step](#writing-tests-step-by-step)
-  - [Appium Inspector](#appium-inspector)
+  - [aAppium Inspector](#aappium-inspector)
   - [Mocha Tests](#mocha-tests)
     - [Appium Test](#appium-test)
     - [Data Test](#data-test)
@@ -48,7 +55,7 @@
 
 ## Writing Tests Step-by-Step
 
-### Appium Inspector
+### aAppium Inspector
 
 1. [Download and install appium inspector.](https://github.com/appium/appium-inspector/releases)
 2. Start your respective emulator. Make sure to give it time to boot up completely.

@@ -1,23 +1,7 @@
 ---
 version: "3"
 
-includes:
-  python: ./PythonTasks.yaml
-
 tasks:
-  all:
-    desc: Initalize all required dependencies of the project.
-    deps: [precommit, node, python:depends]
-
-  node:
-    desc: Install nodejs dependencies
-    cmds:
-      - npm install -g appium
-      - npm install
-    status:
-      - command -v appium
-      - test -d {{.PROJECT_DIR}}/node_modules
-
   precommit:
     desc: Initalize pre-commit
     deps: [brew]

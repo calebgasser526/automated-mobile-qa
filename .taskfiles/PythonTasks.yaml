@@ -27,6 +27,7 @@ tasks:
       - pyenv install -s {{.PYTHON_VERSION}}
       - pyenv global {{.PYTHON_VERSION}}
     status:
+      - test "$(python --version)" -eq "Python {{.PYTHON_VERSION}}"
     preconditions:
       - sh: command -v pyenv
         msg: |

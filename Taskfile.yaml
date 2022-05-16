@@ -9,6 +9,10 @@ vars:
 
 includes:
   init: .taskfiles/InitTasks.yaml
+  python: .taskfiles/PythonTasks.yaml
+  node: .taskfiles/NodeTasks.yaml
+  cert: .taskfiles/CertTasks.yaml
+  android: .taskfiles/AndroidTasks.yaml
 
 tasks:
   default:
@@ -16,10 +20,12 @@ tasks:
       - task: run
   run:
     deps: [install]
+    cmds:
+      - task: android:run
 
   install:
-    deps: [init:all]
-    status:
-      - test -d {{.PROJECT_DIR}}/.venv
-      - test -f $HOME/.mitmproxy/mitmproxy-ca-cert.cer
-      - command -v pyenv
+    cmds:
+      - task: init:precommit
+      - task: python:depends
+      - task: node:install
+      - task: cert:gen
