@@ -21,7 +21,7 @@ const ios_opts = {
   path: '/wd/hub',
   port: 4723,
   capabilities: {
-    'autoAcceptAlerts': 'true',
+    "autoAcceptAlerts": "true",
     "platformName": "iOS",
     "platformVersion": "15.0",
     "deviceName": "iPhone Simulator",
@@ -49,17 +49,130 @@ describe("Android Appium Automation", () => {
   });
 
   describe("Gather data for example test", () => {
-    it("goes to the search page and looks for a zip code", async () => {
+    beforeEach(async() => {
       driver = await wdio.remote(android_opts);
-      driver.setImplicitTimeout(30000)
+      driver.setImplicitTimeout(30000);
+
+      // search for_sale in 64064
       let el1 = await driver.$("//android.widget.TextView[contains(@resource-id,'on_boarding_location')]");
       await el1.click();
+      
       let el2 = await driver.$("//android.widget.EditText[contains(@resource-id,'search_edit_text')]");
       await el2.click();
-      await el2.setValue("66206");
-      await driver.touchAction({action: 'tap', x: 1333, y: 2741})
+      await el2.setValue("64064");
+
+      await driver.touchAction({action: 'tap', x: 1333, y: 2741});
+
+      // select single listing
+      let el3 = await driver.$("//android.view.View[contains(@content-desc, 'Marker. ')][1]");
+      await el3.waitForDisplayed();
+      await el3.click();
+      await el3.click(); // two clicks to dispose of popup
+
+      // enter ldp
+      let el4 = await driver.$("//android.widget.ImageView[contains(@resource-id, 'listingImageView')]");
+      await el4.waitForDisplayed();
+      await el4.click();
+    });
+
+    afterEach(async () => {
       await new Promise(resolve => setTimeout(resolve, 5000));
     });
+
+    it("submits a lead - LDP - persistent footer", async () => {
+      let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Contact agent')]");
+      await el1.click();
+
+      let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Name')]");
+      await el2.click();
+      await el2.setValue("Test Test");
+      await el2.waitUntil(async function () {
+        return (await this.getText()) === "Test Test, Name"
+      });
+
+      let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
+      await el3.click();
+      await el3.setValue("moveqatest@test.com");
+      await el3.waitUntil(async function () {
+        return (await this.getText()) === "moveqatest@test.com, Email"
+      });
+
+      let el4 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
+      await el4.click();
+      await el4.setValue("8162859038");
+      await el4.waitUntil(async function () {
+        return (await this.getText()) === "8162859038, Phone"
+      });
+      
+      let el5 = await driver.$("//android.widget.FrameLayout");
+      await el5.click();
+
+      let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
+      await el6.click();
+    })
+    
+    it("submits a lead - LDP - inline form", async () => {
+      let el1 = await driver.$("//android.widget.EditText[contains(@content-desc, 'Name')]");
+      await el1.scrollIntoView(); // scrolling not working
+      await el1.waitForDisplayed();
+      await el1.click();
+      await el1.setValue("Test Test");
+      await el1.waitUntil(async function () {
+        return (await this.getText()) === "Test Test, Name"
+      });
+
+      let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
+      await el2.click();
+      await el2.setValue("moveqatest@test.com");
+      await el2.waitUntil(async function () {
+        return (await this.getText()) === "moveqatest@test.com, Email"
+      });
+
+      let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
+      await el3.click();
+      await el3.setValue("8162859038");
+      await el3.waitUntil(async function () {
+        return (await this.getText()) === "8162859038, Phone"
+      });
+
+      let el4 = await driver.$("//android.widget.FrameLayout");
+      await el4.click();
+
+      let el5 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
+      await el5.click();
+    })
+
+    it("submits a lead - LDP - contact agent for details", async () => {
+      let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Contact agent for details')]");
+      await el1.click();
+
+      let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Name')]");
+      await el2.click();
+      await el2.setValue("Test Test");
+      await el2.waitUntil(async function () {
+        return (await this.getText()) === "Test Test, Name"
+      });
+
+      let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
+      await el3.click();
+      await el3.setValue("moveqatest@test.com");
+      await el3.waitUntil(async function () {
+        return (await this.getText()) === "moveqatest@test.com, Email"
+      });
+
+      let el4 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
+      await el4.click();
+      await el4.setValue("8162859038");
+      await el4.waitUntil(async function () {
+        return (await this.getText()) === "8162859038, Phone"
+      });
+      
+      let el5 = await driver.$("//android.widget.FrameLayout");
+      await el5.click();
+
+      let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
+      await el6.click();
+    })
   });
 });
 
@@ -78,20 +191,41 @@ describe("iOS Appium Automation", () => {
   });
 
   describe("Gather data for example test", () => {
-    it("goes to the search page and looks for zip code", async () => {
+    beforeEach(async () => {
       driver = await wdio.remote(ios_opts);
-      driver.setImplicitTimeout(30000)
+      driver.setImplicitTimeout(60000);
+
+      // close popup
       let el1 = await driver.$("~closeButton");
       await el1.click();
+
+      // select search bar and search for_sale in 64064
       let el2 = await driver.$("//XCUIElementTypeApplication[@name=\"(d)Realtor.com\"]/XCUIElementTypeWindow/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeTextField");
       await el2.click();
+      
       let el3 = await driver.$("~City, ZIP, School, or Address");
       await el3.click();
-      await el3.setValue("66206");
-      let el5 = await driver.$("//XCUIElementTypeCell[@name=\"searchCellAutocompletePlaces\"]/XCUIElementTypeOther[1]/XCUIElementTypeOther");
-      await el5.click();
+      await el3.setValue("64064");
+
+      let el4 = await driver.$("//XCUIElementTypeCell[@name=\"searchCellAutocompletePlaces\"]/XCUIElementTypeOther[1]/XCUIElementTypeOther");
+      await el4.click();
+    });
+
+    afterEach(async () => {
       await new Promise(resolve => setTimeout(resolve, 5000));
     });
+
+    it("submits a lead - LDP - persistent footer", async () => {
+
+    })
+
+    it("submits a lead - LDP - inline form", async () => {
+      
+    })
+
+    it("submits a lead - LDP - contact agent for details", async () => {
+      
+    })
   });
 });
 
