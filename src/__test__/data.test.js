@@ -1,128 +1,88 @@
 appium = require("./appium.test.js");
 assert = require('assert');
 
+function findEvent(messages, eventName) {
+	for (const message of messages) {
+		if (message.request.rawUrl.includes("/v1/import")) {
+			let batch_data = JSON.parse(message.requestBody.toString()).batch;
+			for (const eventPayload of batch_data) {
+				console.log(eventPayload);
+				if (eventPayload.event === eventName) {
+					return eventPayload;
+				}
+			}
+		}
+	}
+}
+
 describe("Android data tests", () => {
-	it("tests cobrokeLead submitted on LDP via Contact agent for details button", (done) => { 
-		messages = appium.androidMessages;
-		messages.forEach(m => {
-		  if (m.request.rawUrl.includes("/v1/import")) {
-		  		let batch_data = JSON.parse(m.requestBody.toString()).batch;
-				batch_data.forEach(event => {
-					if ("properties" in event && event.properties.event === "cobrokeLead" &&
-						event.properties.leadPlacement === "for_sale:ldp:listing_summary:contact_agent") {
-							assert.equal(event.properties.event, "cobrokeLead");
-							assert.ok(event.integrations['Adobe Analytics'].visitorId);
-							assert.equal(event.properties.leadDelivery, "co_broke");
-							assert.equal(event.properties.leadPlacement, "for_sale:ldp:listing_summary:contact_agent");
-							assert.equal(event.properties.siteSection, "for_sale");
-					} else {
-						done(new Error("Could not find a suitable lead submission to test against"));
-					}
-				})
-			}
-		});
+	it("tests app launch", () => {
+		const payload = findEvent(appium.androidMessages, "appLaunch");
+
+		assert.equal(payload.properties.event, "appLaunch");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
 	})
-	it("tests cobrokeLead submitted on LDP via the persistent footer", (done) => { 
-		messages = appium.androidMessages;
-		messages.forEach(m => {
-		  if (m.request.rawUrl.includes("/v1/import")) {
-		  		let batch_data = JSON.parse(m.requestBody.toString()).batch;
-				batch_data.forEach(event => {
-					if ("properties" in event && event.properties.event === "cobrokeLead" &&
-						event.properties.leadPlacement === "for_sale:ldp:persistent_footer:lead_cta_email") {
-							assert.equal(event.properties.event, "cobrokeLead");
-							assert.ok(event.integrations['Adobe Analytics'].visitorId);
-							assert.equal(event.properties.leadDelivery, "co_broke");
-							assert.equal(event.properties.leadPlacement, "for_sale:ldp:persistent_footer:lead_cta_email");
-							assert.equal(event.properties.siteSection, "for_sale");
-					} else {
-						done(new Error("Could not find a suitable lead submission to test against"));
-					}
-				})
-			}
-		});
+	it("tests cobrokeLead submitted on LDP via Contact agent button", () => { 
+		const payload = findEvent(appium.androidMessages, "cobrokeLead");
+
+		assert.equal(payload.properties.event, "cobrokeLead");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
+		assert.equal(payload.properties.leadDelivery, "co_broke");
+		assert.equal(payload.properties.leadPlacement, "for_sale:ldp:listing_summary:contact_agent");
+		assert.equal(payload.properties.siteSection, "for_sale");
 	})
-	it("tests cobrokeLead submitted on LDP via the inline form", (done) => { 
-		messages = appium.androidMessages;
-		messages.forEach(m => {
-		  if (m.request.rawUrl.includes("/v1/import")) {
-		  		let batch_data = JSON.parse(m.requestBody.toString()).batch;
-				batch_data.forEach(event => {
-					if ("properties" in event && event.properties.event === "cobrokeLead" &&
-						event.properties.leadPlacement === "for_sale:ldp:inline_lead_form:send_request") {
-							assert.equal(event.properties.event, "cobrokeLead");
-							assert.ok(event.integrations['Adobe Analytics'].visitorId);
-							assert.equal(event.properties.leadDelivery, "co_broke");
-							assert.equal(event.properties.leadPlacement, "for_sale:ldp:inline_lead_form:send_request");
-							assert.equal(event.properties.siteSection, "for_sale");
-					} else {
-						done(new Error("Could not find a suitable lead submission to test against"));
-					}
-				})
-			}
-		});
+	it("tests cobrokeLead submitted on LDP via the inline form", () => { 
+		const payload = findEvent(appium.androidMessages, "cobrokeLead");
+
+		assert.equal(payload.properties.event, "cobrokeLead");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
+		assert.equal(payload.properties.leadDelivery, "co_broke");
+		assert.equal(payload.properties.leadPlacement, "for_sale:ldp:inline_lead_form:send_request");
+		assert.equal(payload.properties.siteSection, "for_sale");
+	})
+	it("tests cobrokeLead submitted on LDP via Contact agent for details button", () => { 
+		const payload = findEvent(appium.androidMessages, "cobrokeLead");
+
+		assert.equal(payload.properties.event, "cobrokeLead");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
+		assert.equal(payload.properties.leadDelivery, "co_broke");
+		assert.equal(payload.properties.leadPlacement, "for_sale:ldp:listing_summary:contact_agent");
+		assert.equal(payload.properties.siteSection, "for_sale");
 	})
 })
 
 describe("iOS Data tests", () => {
-	it("tests cobrokeLead submitted on LDP via Contact agent for details button", (done) => { 
-		messages = appium.iosMessages;
-		messages.forEach(m => {
-		  if (m.request.rawUrl.includes("/v1/import")) {
-		  		let batch_data = JSON.parse(m.requestBody.toString()).batch;
-				batch_data.forEach(event => {
-					if ("properties" in event && event.properties.event === "cobrokeLead" &&
-						event.properties.leadPlacement === "for_sale:ldp:listing_summary:contact_agent") {
-							assert.equal(event.properties.event, "cobrokeLead");
-							assert.ok(event.integrations['Adobe Analytics'].visitorId);
-							assert.equal(event.properties.leadDelivery, "co_broke");
-							assert.equal(event.properties.leadPlacement, "for_sale:ldp:listing_summary:contact_agent");
-							assert.equal(event.properties.siteSection, "for_sale");
-					} else {
-						done(new Error("Could not find a suitable lead submission to test against"));
-					}
-				})
-			}
-		});
+	it("tests app launch", () => {
+		const payload = findEvent(appium.iosMessages, "appLaunch");
+
+		assert.equal(payload.properties.event, "appLaunch");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
 	})
-	it("tests cobrokeLead submitted on LDP via the persistent footer", (done) => { 
-		messages = appium.iosMessages;
-		messages.forEach(m => {
-		  if (m.request.rawUrl.includes("/v1/import")) {
-		  		let batch_data = JSON.parse(m.requestBody.toString()).batch;
-				batch_data.forEach(event => {
-					if ("properties" in event && event.properties.event === "cobrokeLead" &&
-						event.properties.leadPlacement === "for_sale:ldp:persistent_footer:lead_cta_email") {
-							assert.equal(event.properties.event, "cobrokeLead");
-							assert.ok(event.integrations['Adobe Analytics'].visitorId);
-							assert.equal(event.properties.leadDelivery, "co_broke");
-							assert.equal(event.properties.leadPlacement, "for_sale:ldp:persistent_footer:lead_cta_email");
-							assert.equal(event.properties.siteSection, "for_sale");
-					} else {
-						done(new Error("Could not find a suitable lead submission to test against"));
-					}
-				})
-			}
-		});
+	it("tests cobrokeLead submitted on LDP via Contact agent button", () => { 
+		const payload = findEvent(appium.iosMessages, "cobrokeLead");
+
+		assert.equal(payload.properties.event, "cobrokeLead");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
+		assert.equal(payload.properties.leadDelivery, "co_broke");
+		assert.equal(payload.properties.leadPlacement, "for_sale:ldp:listing_summary:contact_agent");
+		assert.equal(payload.properties.siteSection, "for_sale");
 	})
-	it("tests cobrokeLead submitted on LDP via the inline form", (done) => { 
-		messages = appium.iosMessages;
-		messages.forEach(m => {
-		  if (m.request.rawUrl.includes("/v1/import")) {
-		  		let batch_data = JSON.parse(m.requestBody.toString()).batch;
-				batch_data.forEach(event => {
-					if ("properties" in event && event.properties.event === "cobrokeLead" &&
-						event.properties.leadPlacement === "for_sale:ldp:inline_lead_form:send_request") {
-							assert.equal(event.properties.event, "cobrokeLead");
-							assert.ok(event.integrations['Adobe Analytics'].visitorId);
-							assert.equal(event.properties.leadDelivery, "co_broke");
-							assert.equal(event.properties.leadPlacement, "for_sale:ldp:inline_lead_form:send_request");
-							assert.equal(event.properties.siteSection, "for_sale");
-					} else {
-						done(new Error("Could not find a suitable lead submission to test against"));
-					}
-				})
-			}
-		});
+	it("tests cobrokeLead submitted on LDP via the inline form", () => { 
+		const payload = findEvent(appium.iosMessages, "cobrokeLead");
+
+		assert.equal(payload.properties.event, "cobrokeLead");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
+		assert.equal(payload.properties.leadDelivery, "co_broke");
+		assert.equal(payload.properties.leadPlacement, "for_sale:ldp:inline_lead_form:send_request");
+		assert.equal(payload.properties.siteSection, "for_sale");
+	})
+	it("tests cobrokeLead submitted on LDP via Contact agent for details button", () => { 
+		const payload = findEvent(appium.iosMessages, "cobrokeLead");
+
+		assert.equal(payload.properties.event, "cobrokeLead");
+		assert.ok(payload.integrations['Adobe Analytics'].visitorId);
+		assert.equal(payload.properties.leadDelivery, "co_broke");
+		assert.equal(payload.properties.leadPlacement, "for_sale:ldp:listing_summary:contact_agent");
+		assert.equal(payload.properties.siteSection, "for_sale");
 	})
 })

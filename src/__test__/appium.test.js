@@ -9,7 +9,7 @@ const android_opts = {
     "platformName": "Android",
     "platformVersion": "11",
     "deviceName": "Android Emulator",
-    "app": "./BuyRent-core-debug.apk",
+    "app": "/Users/dfox/Projects/evo/automated-mobile-qa/BuyRent-core-debug.apk",
     "appPackage": "com.move.realtor.qa",
     "appActivity": "com.move.realtor.splash.SplashActivity",
     "appWaitActivity": "com.move.realtor.onboarding.OnBoardingActivity",
@@ -49,10 +49,12 @@ describe("Android Appium Automation", () => {
   });
 
   describe("Gather data for example test", () => {
-    beforeEach(async() => {
+    before(async() => {
       driver = await wdio.remote(android_opts);
       driver.setImplicitTimeout(30000);
+    })
 
+    beforeEach(async() => {
       // search for_sale in 64064
       let el1 = await driver.$("//android.widget.TextView[contains(@resource-id,'on_boarding_location')]");
       await el1.click();
@@ -77,38 +79,37 @@ describe("Android Appium Automation", () => {
 
     afterEach(async () => {
       await new Promise(resolve => setTimeout(resolve, 5000));
+      await driver.reset();
     });
 
-    it("submits a lead - LDP - persistent footer", async () => {
+    it("submits a lead - LDP - contact agent button", async () => {
       let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Contact agent')]");
       await el1.click();
 
       let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Name')]");
       await el2.click();
+      await driver.pause(2000);
       await el2.setValue("Test Test");
-      await el2.waitUntil(async function () {
-        return (await this.getText()) === "Test Test, Name"
-      });
+      await driver.pause(2000);
 
       let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
       await el3.click();
+      await driver.pause(2000);
       await el3.setValue("moveqatest@test.com");
-      await el3.waitUntil(async function () {
-        return (await this.getText()) === "moveqatest@test.com, Email"
-      });
+      await driver.pause(2000);
 
       let el4 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
       await el4.click();
+      await driver.pause(2000);
       await el4.setValue("8162859038");
-      await el4.waitUntil(async function () {
-        return (await this.getText()) === "8162859038, Phone"
-      });
-      
+      await driver.pause(2000);
+
       let el5 = await driver.$("//android.widget.FrameLayout");
       await el5.click();
 
       let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
       await el6.click();
+      await driver.pause(7000);
     })
     
     it("submits a lead - LDP - inline form", async () => {
@@ -123,17 +124,15 @@ describe("Android Appium Automation", () => {
 
       let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
       await el2.click();
+      await driver.pause(2000);
       await el2.setValue("moveqatest@test.com");
-      await el2.waitUntil(async function () {
-        return (await this.getText()) === "moveqatest@test.com, Email"
-      });
+      await driver.pause(2000);
 
       let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
       await el3.click();
+      await driver.pause(2000);
       await el3.setValue("8162859038");
-      await el3.waitUntil(async function () {
-        return (await this.getText()) === "8162859038, Phone"
-      });
+      await driver.pause(2000);
 
       let el4 = await driver.$("//android.widget.FrameLayout");
       await el4.click();
@@ -148,30 +147,28 @@ describe("Android Appium Automation", () => {
 
       let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Name')]");
       await el2.click();
+      await driver.pause(2000);
       await el2.setValue("Test Test");
-      await el2.waitUntil(async function () {
-        return (await this.getText()) === "Test Test, Name"
-      });
+      await driver.pause(2000);
 
       let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
       await el3.click();
+      await driver.pause(2000);
       await el3.setValue("moveqatest@test.com");
-      await el3.waitUntil(async function () {
-        return (await this.getText()) === "moveqatest@test.com, Email"
-      });
+      await driver.pause(2000);
 
       let el4 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
       await el4.click();
+      await driver.pause(2000);
       await el4.setValue("8162859038");
-      await el4.waitUntil(async function () {
-        return (await this.getText()) === "8162859038, Phone"
-      });
-      
+      await driver.pause(2000);
+
       let el5 = await driver.$("//android.widget.FrameLayout");
       await el5.click();
 
       let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
       await el6.click();
+      await driver.pause(7000);
     })
   });
 });

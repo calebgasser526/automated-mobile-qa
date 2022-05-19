@@ -89,12 +89,12 @@ function init(){
   fi
 
   if [[ ! -d "./.venv/lib/python3.9/site-packages/mitmproxy" ]]; then 
-    echo "[==] Installing python depedancies"
+    echo "[==] Installing python dependencies"
     . ./.venv/bin/activate && pip install -r requirments.txt &> /dev/null 
   fi
   
   if [[ ! -d "./node_modules" ]]; then 
-    echo "[==] Installing node depedancies"
+    echo "[==] Installing node dependencies"
     npm install -g appium &> /dev/null
     npm install &> /dev/null 
   fi
