@@ -25,7 +25,7 @@ const ios_opts = {
     "platformName": "iOS",
     "platformVersion": "15.0",
     "deviceName": "iPhone Simulator",
-    "app": "./Realtor.com.app",
+    "app": "/Users/dfox/Projects/evo/automated-mobile-qa/Realtor.com.app",
     "automationName": "XCUITest"
   }
 };
@@ -40,6 +40,9 @@ describe("Android Appium Automation", () => {
       androidMessages.push(message);
      }
      proxy = await Mitmproxy.Create(requestHandler, [], true, true);
+
+     driver = await wdio.remote(android_opts);
+     driver.setImplicitTimeout(30000);
   });
 
   after(async () => {
@@ -48,13 +51,74 @@ describe("Android Appium Automation", () => {
     await proxy.shutdown()
   });
 
-  describe("Gather data for example test", () => {
-    before(async() => {
-      driver = await wdio.remote(android_opts);
-      driver.setImplicitTimeout(30000);
+  describe("Test Data - SRP", () => {
+    beforeEach(async() => {
+      await driver.launchApp();
+
+      // search for_sale in 64064
+      let el1 = await driver.$("//android.widget.TextView[contains(@resource-id,'on_boarding_location')]");
+      await el1.click();
+      
+      let el2 = await driver.$("//android.widget.EditText[contains(@resource-id,'search_edit_text')]");
+      await el2.click();
+      await el2.setValue("64064");
+
+      await driver.touchAction({action: 'tap', x: 1333, y: 2741});
+
+      let el3 = await driver.$("//android.widget.FrameLayout");
+      await el3.click();
+
+      let el4 = await driver.$("//android.widget.Button[contains(@text, 'List')]");
+      await el4.click();
+      
+      await driver.pause(2000);
     })
 
+    afterEach(async () => {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      await driver.closeApp();
+    });
+
+    // it("submits a lead - SRP - contact agent button", async () => {
+    //   let el1 = await driver.$("//android.widget.Button[contains(@resource-id, 'lead_button')]");
+    //   await el1.click();
+
+    //   let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Name')]");
+    //   await el2.click();
+    //   await driver.pause(2000);
+    //   await el2.setValue("Test Test");
+    //   await driver.pause(2000);
+
+    //   let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
+    //   await el3.click();
+    //   await driver.pause(2000);
+    //   await el3.setValue("moveqatest@test.com");
+    //   await driver.pause(2000);
+
+    //   let el4 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
+    //   await el4.click();
+    //   await driver.pause(2000);
+    //   await el4.setValue("8162859038");
+    //   await driver.pause(2000);
+
+    //   let el5 = await driver.$("//android.widget.FrameLayout");
+    //   await el5.click();
+
+    //   let el6 = await driver.$("//android.widget.Button[contains(@text, 'CONTACT AGENT')]");
+    //   await el6.click();
+    //   await driver.pause(7000);
+    // })
+    // it("saves a listing - SRP - list view", async () => {
+    //   let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Save listing')][1]");
+    //   await el1.click();
+    //   await driver.pause(2000);
+    // })
+  })
+
+  describe("Test Data - LDP", () => {
     beforeEach(async() => {
+      await driver.launchApp();
+
       // search for_sale in 64064
       let el1 = await driver.$("//android.widget.TextView[contains(@resource-id,'on_boarding_location')]");
       await el1.click();
@@ -75,11 +139,12 @@ describe("Android Appium Automation", () => {
       let el4 = await driver.$("//android.widget.ImageView[contains(@resource-id, 'listingImageView')]");
       await el4.waitForDisplayed();
       await el4.click();
+      await driver.pause(2000);
     });
 
     afterEach(async () => {
       await new Promise(resolve => setTimeout(resolve, 5000));
-      await driver.reset();
+      await driver.closeApp();
     });
 
     it("submits a lead - LDP - contact agent button", async () => {
@@ -112,34 +177,38 @@ describe("Android Appium Automation", () => {
       await driver.pause(7000);
     })
     
-    it("submits a lead - LDP - inline form", async () => {
-      let el1 = await driver.$("//android.widget.EditText[contains(@content-desc, 'Name')]");
-      await el1.scrollIntoView(); // scrolling not working
-      await el1.waitForDisplayed();
-      await el1.click();
-      await el1.setValue("Test Test");
-      await el1.waitUntil(async function () {
-        return (await this.getText()) === "Test Test, Name"
-      });
+    // it("submits a lead - LDP - inline form", async () => {
+    //   await driver.pause(3000);
+    //   for (let i = 0; i < 10; i++) {
+    //     await driver.touchAction([ {action: 'longPress', x: 0, y: 2500}, { action: 'moveTo', x: 0, y: 10}, 'release' ]);
+    //   }
 
-      let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
-      await el2.click();
-      await driver.pause(2000);
-      await el2.setValue("moveqatest@test.com");
-      await driver.pause(2000);
+    //   await driver.pause(5000);
+    //   let el1 = await driver.$("//android.widget.EditText[contains(@elementId, '00000000-0000-001b-0000-00ae0000023a')]");
+    //   await el1.click();
+    //   await driver.pause(2000);
+    //   await el1.setValue("Test Test");
+    //   await driver.pause(2000);
 
-      let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
-      await el3.click();
-      await driver.pause(2000);
-      await el3.setValue("8162859038");
-      await driver.pause(2000);
+    //   let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Email')]");
+    //   await el2.click();
+    //   await driver.pause(2000);
+    //   await el2.setValue("moveqatest@test.com");
+    //   await driver.pause(2000);
 
-      let el4 = await driver.$("//android.widget.FrameLayout");
-      await el4.click();
+    //   let el3 = await driver.$("//android.widget.EditText[contains(@text, 'Phone')]");
+    //   await el3.click();
+    //   await driver.pause(2000);
+    //   await el3.setValue("8162859038");
+    //   await driver.pause(2000);
 
-      let el5 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
-      await el5.click();
-    })
+    //   let el4 = await driver.$("//android.widget.FrameLayout");
+    //   await el4.click();
+
+    //   let el5 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
+    //   await el5.click();
+    //   await driver.pause(7000);
+    // })
 
     it("submits a lead - LDP - contact agent for details", async () => {
       let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Contact agent for details')]");
@@ -169,6 +238,32 @@ describe("Android Appium Automation", () => {
       let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
       await el6.click();
       await driver.pause(7000);
+    })
+
+    it("submits a lead - LDP - text", async () => {
+      let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Text')]");
+      await el1.click();
+
+      let el2 = await driver.$("//android.widget.EditText[contains(@text, 'Mobile phone number')]");
+      await el2.click();
+      await driver.pause(2000);
+      await el2.setValue("8164828922");
+      await driver.pause(2000);
+
+      let el3 = await driver.$("//android.widget.FrameLayout");
+      await el3.click();
+
+      let el4 = await driver.$("//android.widget.Button[contains(@content-desc, 'Text me')]");
+      await el4.click();
+      await driver.pause(7000);
+    })
+    // it("submits a lead - LDP - phone", async () => {
+
+    // })
+    it("saves a listing - LDP - photo gallery", async () => {
+      let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Save listing')]");
+      await el1.click();
+      await driver.pause(2000);
     })
   });
 });
