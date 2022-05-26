@@ -7,7 +7,7 @@ function findEvent(messages, key, value) {
 			let batch_data = JSON.parse(message.requestBody.toString()).batch;
 			for (const eventPayload of batch_data) {
 				console.log(eventPayload);
-				if (eventPayload[key] === value) {
+				if (eventPayload.properties[key] === value) {
 					return eventPayload;
 				}
 			}
@@ -19,58 +19,104 @@ describe("Android Data Tests", () => {
 	it("tests app launch", () => { 
 		const payload = findEvent(appium.androidMessages, "event", "appLaunch");
 
-		assert.equal(payload.properties.event, "appLaunch");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "appLaunch");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}
 	});
 
 	it("tests cobrokeLead submission on LDP", () => {
 		const payload = findEvent(appium.androidMessages, "event", "cobrokeLead");
 
-		assert.equal(payload.properties.event, "cobrokeLead");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "cobrokeLead");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}
 	});
 
 	it("tests cobrokeLead submission on SRP", () => {
 		const payload = findEvent(appium.androidMessages, "event", "cobrokeLead");
 
-		assert.equal(payload.properties.event, "cobrokeLead");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "cobrokeLead");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);	
+		} else {
+			throw Error("Could not find event to test...");
+		}
 	});
 
 	it("tests forSaleCobrokePhoneLead on LDP", () => {
 		const payload = findEvent(appium.androidMessages, "event", "forSaleCobrokePhoneLead");
 
-		assert.equal(payload.properties.event, "forSaleCobrokePhoneLead");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "forSaleCobrokePhoneLead");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}		
 	});
 
 	it("tests save listing on LDP", () => {
-		const payload = findEvent(appium.androidMessages, "event", "savedItem");
+		const payload = findEvent(appium.androidMessages, "saveItem", "listing");
 
-		assert.equal(payload.properties.event, "savedItem");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "savedItem");
+			assert.equal(payload.properties.saveItem, "listing");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}
 	});
 
 	it("tests save listing on SRP", () => {
-		const payload = findEvent(appium.androidMessages, "event", "savedItem");
+		const payload = findEvent(appium.androidMessages, "saveItem", "listing");
 
-		assert.equal(payload.properties.event, "savedItem");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "savedItem");
+			assert.equal(payload.properties.saveItem, "listing");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}		
 	});
 
 	it("tests save search on SRP", () => {
-		const payload = findEvent(appium.androidMessages, "event", "savedItem");
+		const payload = findEvent(appium.androidMessages, "saveItem", "search");
 
-		assert.equal(payload.properties.event, "savedItem");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "savedItem");
+			assert.equal(payload.properties.saveItem, "search");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}
 	});
+
+	it("tests share listing on LDP", () => {
+		const payload = findEvent(appium.androidMessages, "event", "emailShare");
+
+		if (payload) {
+			assert.equal(payload.properties.event, "emailShare");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}
+	})
 })
 
 describe("iOS Data Tests", () => {
-	it("tests app launch", () => { 
+	it("tests app launch", () => {
 		const payload = findEvent(appium.iosMessages, "appLaunch");
 
-		assert.equal(payload.properties.event, "appLaunch");
-		assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		if (payload) {
+			assert.equal(payload.properties.event, "appLaunch");
+			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
+		} else {
+			throw Error("Could not find event to test...");
+		}
 	});
 })

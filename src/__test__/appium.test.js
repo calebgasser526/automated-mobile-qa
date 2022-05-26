@@ -58,15 +58,12 @@ describe("Android Appium Automation", () => {
       
       let el2 = await driver.$("//android.widget.EditText[contains(@resource-id,'search_edit_text')]");
       await el2.click();
-      await el2.setValue("64064");
+      await el2.setValue("66206");
 
       await driver.touchAction({action: 'tap', x: 1333, y: 2741});
 
       let el3 = await driver.$("//android.widget.Button[contains(@text, 'List')]");
       await el3.click();
-
-      // let el4 = await driver.$("//android.widget.FrameLayout");
-      // await el4.click();
       
       await driver.pause(5000);
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -76,8 +73,8 @@ describe("Android Appium Automation", () => {
       let el1 = await driver.$("//android.widget.TextView[contains(@resource-id, 'save_search_top')]");
       await el1.click();
       await el1.click(); // two clicks to dispose of popup
-
-      await driver.pause(5000);
+      await driver.pause(2000);
+      
       await new Promise(resolve => setTimeout(resolve, 5000));
     });
 
@@ -179,6 +176,17 @@ describe("Android Appium Automation", () => {
 
       let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
       await el6.click();
+
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    });
+
+    it("shares a listing on LDP", async () => {
+      let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Share listing')]");
+      await el1.click();
+
+      // fill out forms
+
+      // submit
 
       await new Promise(resolve => setTimeout(resolve, 5000));
     });
