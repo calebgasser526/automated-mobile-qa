@@ -74,7 +74,7 @@ describe("Android Appium Automation", () => {
       await el1.click();
       await el1.click(); // two clicks to dispose of popup
       await driver.pause(2000);
-      
+
       await new Promise(resolve => setTimeout(resolve, 5000));
     });
 
@@ -176,17 +176,6 @@ describe("Android Appium Automation", () => {
 
       let el6 = await driver.$("//android.widget.Button[contains(@content-desc, 'Send message')]");
       await el6.click();
-
-      await new Promise(resolve => setTimeout(resolve, 5000));
-    });
-
-    it("shares a listing on LDP", async () => {
-      let el1 = await driver.$("//android.widget.Button[contains(@content-desc, 'Share listing')]");
-      await el1.click();
-
-      // fill out forms
-
-      // submit
 
       await new Promise(resolve => setTimeout(resolve, 5000));
     });

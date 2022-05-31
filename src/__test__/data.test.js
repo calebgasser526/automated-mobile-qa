@@ -6,8 +6,7 @@ function findEvent(messages, key, value) {
 		if (message.request.rawUrl.includes("/v1/import")) {
 			let batch_data = JSON.parse(message.requestBody.toString()).batch;
 			for (const eventPayload of batch_data) {
-				console.log(eventPayload);
-				if (eventPayload.properties[key] === value) {
+				if ("properties" in eventPayload && eventPayload.properties[key] === value) {
 					return eventPayload;
 				}
 			}
@@ -16,7 +15,7 @@ function findEvent(messages, key, value) {
 }
 
 describe("Android Data Tests", () => {
-	it("tests app launch", () => { 
+	it("tests app launch", () => {
 		const payload = findEvent(appium.androidMessages, "event", "appLaunch");
 
 		if (payload) {
@@ -95,17 +94,6 @@ describe("Android Data Tests", () => {
 			throw Error("Could not find event to test...");
 		}
 	});
-
-	it("tests share listing on LDP", () => {
-		const payload = findEvent(appium.androidMessages, "event", "emailShare");
-
-		if (payload) {
-			assert.equal(payload.properties.event, "emailShare");
-			assert.ok(payload.integrations["Adobe Analytics"].visitorId);
-		} else {
-			throw Error("Could not find event to test...");
-		}
-	})
 })
 
 describe("iOS Data Tests", () => {
