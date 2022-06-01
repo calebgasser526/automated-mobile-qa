@@ -82,6 +82,9 @@ describe("Android Appium Automation", () => {
       let el1 = await driver.$("//android.widget.ImageButton[contains(@content-desc, 'Save listing')][1]");
       await el1.click();
 
+      let el2 = await driver.$("//android.widget.ImageButton[contains(@content-desc, 'Unsave listing')][1]");
+      await el2.click();
+
       await new Promise(resolve => setTimeout(resolve, 5000));
     });
 
