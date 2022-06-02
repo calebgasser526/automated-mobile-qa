@@ -240,7 +240,7 @@ describe("iOS Data tests", () => {
 
 #### Proxy
 
-- [Installing CA for proxy on android](https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/)
+- [Installing CA for proxy on Android](https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/)
 
 #### Android
 
