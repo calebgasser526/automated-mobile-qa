@@ -11,12 +11,12 @@
 
 <!-- vim-markdown-toc GFM -->
 
-- [Up coming changes.](#up-coming-changes)
+- [Upcoming Changes](#upcoming-changes)
 - [Getting Started](#getting-started)
-  - [Requirments](#requirments)
-- [Running Tests Step-by-step](#running-tests-step-by-step)
+  - [Requirements](#requirements)
+- [Running Tests Step-by-Step](#running-tests-step-by-Step)
 - [Writing Tests Step-by-Step](#writing-tests-step-by-step)
-  - [aAppium Inspector](#aappium-inspector)
+  - [Appium Inspector](#appium-inspector)
   - [Mocha Tests](#mocha-tests)
     - [Appium Test](#appium-test)
     - [Data Test](#data-test)
@@ -28,14 +28,14 @@
 
 <!-- vim-markdown-toc -->
 
-## Up coming changes.
+## Upcoming Changes
 
-- [ ] Migrate from javascript to python. This is needed due to the proxy wrapper for javascript being outdated.
+- [ ] Migrate from JavaScript to Python. This is needed due to the proxy wrapper for JavaScript being outdated.
 - [ ] Migrate build system from bash/make to task. A concurrent, easier to use build tool.
 
 ## Getting Started
 
-### Requirments
+### Requirements
 
 | Software                                            | Version   | Resources |
 | --------------------------------------------------- | --------- | --------- |
@@ -43,10 +43,10 @@
 | NodeJS                                              | >=14.15.4 |           |
 | NPM                                                 | >=6.14.10 |           |
 | Xcode                                               | >=13      |           |
-| iOS app or android apk                              |           |           |
+| iOS App or Android APK                              |           |           |
 | Appium Inspector (Optional, but highly recommended) |           |           |
 
-## Running Tests Step-by-step
+## Running Tests Step-by-Step
 
 1. Clone this repository.
 2. Place iOS and Android applications in this project folder. (Names need to be `BuyRent-core-debug.apk` and `Realtor.com.app` respectively).
@@ -55,9 +55,9 @@
 
 ## Writing Tests Step-by-Step
 
-### aAppium Inspector
+### Appium Inspector
 
-1. [Download and install appium inspector.](https://github.com/appium/appium-inspector/releases)
+1. [Download and install Appium Inspector.](https://github.com/appium/appium-inspector/releases)
 2. Start your respective emulator. Make sure to give it time to boot up completely.
 
 - Android: Run `make start-emulator` in your terminal. Make sure you're in the project directory.
@@ -65,14 +65,14 @@
 - iOS: Run `open -a Simulator.app` in your terminal.
   ![](./docs/imgs/start-ios-emulator.png)
 
-3. Start the appium server in a seperate console with the command `appium`
+3. Start the Appium server in a seperate console with the command `appium`
    ![](./docs/imgs/start-appium.png)
-4. Copy the `capabilites` section from `src/__test__/appium.test.js` for android (`android_opts`) or ios (`ios_opts`) respectively.
+4. Copy the `capabilites` section from `src/__test__/appium.test.js` for Android (`android_opts`) or iOS (`ios_opts`) respectively.
    ![](./docs/imgs/capabilites.png)
-5. Paste the configuration into `JSON Representation` of the appium inspector. **Make sure to save it!**
-6. Make sure `Remote Path` of appium inspector is set to `/wd/hub`
+5. Paste the configuration into `JSON Representation` of the Appium Inspector. **Make sure to save it!**
+6. Make sure `Remote Path` of Appium Inspector is set to `/wd/hub`
    ![](docs/imgs/appium-inspector-setup.png)
-7. Start the appium inspector and use it to generate the code you need for `appium.test.js`.
+7. Start the Appium Inspector and use it to generate the code you need for `appium.test.js`.
    ![](docs/imgs/appium-start-session.png)
 
 - To record your actions and generate code, enable the "eye" icon at the top of the inspector. **Do not click inside the emulator its self, only inside the view the inspector gives you!**
@@ -81,19 +81,19 @@
 
 ### Mocha Tests
 
-There are two parts to writing a test. That appium test that triggers the tracking event and the test to compare the actual data.
+There are two parts to writing a test. That Appium test that triggers the tracking event and the test to compare the actual data.
 
 #### Appium Test
 
-There are 3 important functions to include. `before`, `after`, and the `describe` or your appium test it's self.
+There are 3 important functions to include. `before`, `after`, and the `describe` or your Appium test its self.
 
-- **before:** This should include setting up the proxy and it's handler. The hander needs to push messages to the respective array depending on device.
-  - For android `androidMessages`
-  - For ios `iosMessages`
+- **before:** This should include setting up the proxy and its handler. The handler needs to push messages to the respective array depending on device.
+  - For Android `androidMessages`
+  - For iOS `iosMessages`
 - **after:** This is for test cleanup tasks. The important thing to note here is the `setTimeout`. If you find your tests are taking a while and failing due to time out
   increase this number.
-- **describe:** This is where the code generated in the appium inspector goes. Chances are the code won't work out-of-the-box. You'll need to tweak how elements are selected.
-  If you're having trouble, reference your code against the examles given here.
+- **describe:** This is where the code generated in the Appium Inspector goes. Chances are the code won't work out-of-the-box. You'll need to tweak how elements are selected.
+  If you're having trouble, reference your code against the examples given here.
 
 **Example Android Test** (as seen in `src/__test__/appium.test.js`)
 
