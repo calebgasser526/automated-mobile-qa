@@ -1,0 +1,127 @@
+---
+version: "3"
+vars:
+  NAME: "android-30"
+  PLATFORM: "android-30"
+  IMAGE: "system-images;android-30;google_apis;x86"
+  DEVICE: "pixel_4_xl"
+  PROXY: "127.0.0.1:8080"
+  ANDROID_LOCAL_SDK: "{{.PROJECT_DIR}}/android_local_sdk"
+  ANDROID_HOME: "{{.ANDROID_LOCAL_SDK}}"
+  ANDROID_SDK_HOME: "{{.ANDROID_LOCAL_SDK}}"
+  ANDROID_SDK_ROOT: "{{.ANDROID_LOCAL_SDK}}"
+  ANDROID_EMULATOR_HOME: "{{.ANDROID_LOCAL_SDK}}/.android"
+  ANDROID_AVD_HOME: "{{.ANDROID_EMULATOR_HOME}}/avd"
+  ANDROID_CMD_TOOLS: "{{.ANDROID_LOCAL_SDK}}/cmdline-tools/latest/bin"
+  SDK_MANAGER: "{{.ANDROID_CMD_TOOLS}}/sdkmanager"
+  AVD_MANAGER: "{{.ANDROID_CMD_TOOLS}}/avdmanager"
+  ANDROID_EMULATOR: "{{.ANDROID_LOCAL_SDK}}/emulator/emulator"
+  ANDROID_PLATFORM: "{{.ANDROID_LOCAL_SDK}}/platforms/{{.PLATFORM}}"
+  ANDROID_IMAGE: "{{.ANDROID_LOCAL_SDK}}/system-images/{{.PLATFORM}}/google_apis/x86"
+  ANDROID_PLATFORM_TOOLS: "{{.ANDROID_LOCAL_SDK}}/platform-tools"
+  ANDROID_BUILD_TOOLS: "{{.ANDROID_LOCAL_SDK}}/build-tools"
+  ADB: "{{.ANDROID_PLATFORM_TOOLS}}/adb"
+env:
+  ANDROID_LOCAL_SDK: "{{.ANDROID_LOCAL_SDK}}"
+  ANDROID_HOME: "{{.ANDROID_HOME}}"
+  ANDROID_SDK_HOME: "{{.ANDROID_SDK_HOME}}"
+  ANDROID_SDK_ROOT: "{{.ANDROID_SDK_ROOT}}"
+  ANDROID_EMULATOR_HOME: "{{.ANDROID_EMULATOR_HOME}}"
+  ANDROID_AVD_HOME: "{{.ANDROID_AVD_HOME}}"
+  ANDROID_CMD_TOOLS: "{{.ANDROID_CMD_TOOLS}}"
+  SDK_MANAGER: "{{.SDK_MANAGER}}"
+  AVD_MANAGER: "{{.AVD_MANAGER}}"
+  ANDROID_EMULATOR: "{{.ANDROID_EMULATOR}}"
+  ANDROID_PLATFORM: "{{.ANDROID_PLATFORM}}"
+  ANDROID_IMAGE: "{{.ANDROID_IMAGE}}"
+  ANDROID_PLATFORM_TOOLS: "{{.ANDROID_PLATFORM_TOOLS}}"
+  ANDROID_BUILD_TOOLS: "{{.ANDROID_BUILD_TOOLS}}"
+  ADB: "{{.ADB}}"
+
+tasks:
+  stop:
+    desc: Stop running android emulator.
+    cmds:
+      - cmd: adb emu kill
+        ignore_error: true
+  clean:
+    desc: Remove local android installation.
+    cmds:
+      - cmd: rm -fr "{{.ANDROID_LOCAL_SDK}}"
+        ignore_error: true
+
+  local_sdk:
+    desc: Create android local sdk directory.
+    cmds:
+      - mkdir -p "{{.ANDROID_LOCAL_SDK}}"
+    status:
+      - test -d "{{.ANDROID_LOCAL_SDK}}"
+
+  avd_home:
+    desc: Create android avd home directory.
+    cmds:
+      - mkdir -p "{{.ANDROID_AVD_HOME}}"
+    status:
+      - test -d "{{.ANDROID_AVD_HOME}}"
+
+  cmd_tools:
+    desc: Install commandline tools in local android sdk.
+    deps: [local_sdk, avd_home]
+    dir: "{{.ANDROID_LOCAL_SDK}}"
+    cmds:
+      - wget https://dl.google.com/android/repository/commandlinetools-mac-8092744_latest.zip
+      - unzip commandlinetools-mac-8092744_latest.zip
+      - defer: rm commandlinetools-mac-8092744_latest.zip
+      - mkdir cmdline-tools/latest
+      - mv cmdline-tools/bin cmdline-tools/latest/bin
+      - mv cmdline-tools/lib cmdline-tools/latest/lib
+      - defer: rm -fr cmdline-tools/bin
+      - defer: rm -fr cmdline-tools/lib
+      - defer: rm cmdline-tools/NOTICE.txt
+      - defer: rm cmdline-tools/source.properties
+    status:
+      - test -d "{{.ANDROID_CMD_TOOLS}}"
+
+  platform:
+    desc: Install platform in local android sdk.
+    deps: [cmd_tools]
+    cmds:
+      - yes | {{.SDK_MANAGER}} "platforms;{{.PLATFORM}}"
+    status:
+      - test -d "{{.ANDROID_PLATFORM}}"
+
+  image:
+    desc: Creat android image for local android emulator.
+    deps: [platform]
+    cmds:
+      - yes | {{.SDK_MANAGER}} "{{.IMAGE}}"
+    status:
+      - test -d "{{.ANDROID_IMAGE}}"
+
+  emulator:
+    desc: Install android emulator tools for local android sdk.
+    deps: [image]
+    cmds:
+      - yes | {{.SDK_MANAGER}} "build-tools;32.0.0" "emulator" "platform-tools"
+    status:
+      - test -f "{{.ANDROID_EMULATOR}}"
+      - test -f "{{.ANDROID_PLATFORM_TOOLS}}"
+
+  avd:
+    desc: Create avd for local android emulator.
+    deps: [emulator]
+    cmds:
+      - $AVD_MANAGER create avd -d "{{.DEVICE}}" -n "{{.NAME}}" -k "{{.IMAGE}}" --force
+    status:
+      - test -d "{{.ANDROID_LOCAL_SDK}}/.android/avd/android-30.avd"
+
+  install:
+    desc: Install local android environment.
+    cmds:
+      - task: avd
+
+  run:
+    desc: Run local android emulator.
+    deps: [install]
+    cmds:
+      - $ANDROID_EMULATOR -avd "{{.NAME}}" -writable-system -netdelay none -netspeed full -http-proxy "http://{{.PROXY}}"
