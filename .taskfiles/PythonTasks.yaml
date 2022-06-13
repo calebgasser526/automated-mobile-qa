@@ -9,7 +9,7 @@ tasks:
     deps: [virt]
     desc: Install python dependencies into the virtual environment.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirments.txt
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirments.txt &> /dev/null
     status:
       - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/mitmproxy
 
@@ -32,3 +32,7 @@ tasks:
       - sh: command -v pyenv
         msg: |
           Pyenv is not installed. Have you run 'task install'?
+  clean:
+    desc: Remove python virtual environment.
+    cmds:
+      - rm -fr {{.PROJECT_DIR}}/.venv

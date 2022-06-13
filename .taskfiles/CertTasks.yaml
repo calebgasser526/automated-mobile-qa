@@ -4,7 +4,6 @@ version: "3"
 vars:
   CERT_NAME: "mitmproxy"
   CERT_DIR: "$HOME/.mitmproxy"
-  ADB: "{{.PROJECT_DIR}}/android_local_sdk/platform-tools/adb"
 
 tasks:
   clean:
@@ -16,9 +15,9 @@ tasks:
     desc: Install certificate to android device and system.
     deps: [system]
     cmds:
-      - ./install-android-certificate.sh {{.ADB}}
+      - ./hack/install-android-certificate.sh "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools/adb"
     preconditions:
-      - sh: test -d "{{.PROJECT_DIR}}/android_local_sdk/platform-tools"
+      - sh: test -d "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools"
         msg: |
           The local android sdk does not appear to have adb. Did you run 'task android:install'?
 
@@ -33,6 +32,6 @@ tasks:
     desc: Generate's certificate for mitmproxy.
     desp: [python:depends]
     cmds:
-      - source ./.venv/bin/activate && npm run gen-cert
+      - source ./.venv/bin/activate && npm run gen-cert > /dev/null
     status:
       - test -f $HOME/.mitmproxy/mitmproxy-ca-cert.cer

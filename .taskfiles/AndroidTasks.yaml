@@ -6,7 +6,7 @@ vars:
   IMAGE: "system-images;android-30;google_apis;x86"
   DEVICE: "pixel_4_xl"
   PROXY: "127.0.0.1:8080"
-  ANDROID_LOCAL_SDK: "{{.PROJECT_DIR}}/android_local_sdk"
+  ANDROID_LOCAL_SDK: "{{.PROJECT_DIR}}/.android_local_sdk"
   ANDROID_HOME: "{{.ANDROID_LOCAL_SDK}}"
   ANDROID_SDK_HOME: "{{.ANDROID_LOCAL_SDK}}"
   ANDROID_SDK_ROOT: "{{.ANDROID_LOCAL_SDK}}"
@@ -44,6 +44,7 @@ tasks:
     cmds:
       - cmd: adb emu kill
         ignore_error: true
+
   clean:
     desc: Remove local android installation.
     cmds:
@@ -69,8 +70,8 @@ tasks:
     deps: [local_sdk, avd_home]
     dir: "{{.ANDROID_LOCAL_SDK}}"
     cmds:
-      - wget https://dl.google.com/android/repository/commandlinetools-mac-8092744_latest.zip
-      - unzip commandlinetools-mac-8092744_latest.zip
+      - wget https://dl.google.com/android/repository/commandlinetools-mac-8092744_latest.zip &> /dev/null
+      - unzip commandlinetools-mac-8092744_latest.zip > /dev/null
       - defer: rm commandlinetools-mac-8092744_latest.zip
       - mkdir cmdline-tools/latest
       - mv cmdline-tools/bin cmdline-tools/latest/bin
@@ -86,7 +87,7 @@ tasks:
     desc: Install platform in local android sdk.
     deps: [cmd_tools]
     cmds:
-      - yes | {{.SDK_MANAGER}} "platforms;{{.PLATFORM}}"
+      - yes | {{.SDK_MANAGER}} "platforms;{{.PLATFORM}}" > /dev/null
     status:
       - test -d "{{.ANDROID_PLATFORM}}"
 
@@ -94,7 +95,7 @@ tasks:
     desc: Creat android image for local android emulator.
     deps: [platform]
     cmds:
-      - yes | {{.SDK_MANAGER}} "{{.IMAGE}}"
+      - yes | {{.SDK_MANAGER}} "{{.IMAGE}}" > /dev/null
     status:
       - test -d "{{.ANDROID_IMAGE}}"
 
@@ -102,10 +103,10 @@ tasks:
     desc: Install android emulator tools for local android sdk.
     deps: [image]
     cmds:
-      - yes | {{.SDK_MANAGER}} "build-tools;32.0.0" "emulator" "platform-tools"
+      - yes | {{.SDK_MANAGER}} "build-tools;32.0.0" "emulator" "platform-tools" > /dev/null
     status:
       - test -f "{{.ANDROID_EMULATOR}}"
-      - test -f "{{.ANDROID_PLATFORM_TOOLS}}"
+      - test -d "{{.ANDROID_PLATFORM_TOOLS}}"
 
   avd:
     desc: Create avd for local android emulator.
@@ -124,4 +125,4 @@ tasks:
     desc: Run local android emulator.
     deps: [install]
     cmds:
-      - $ANDROID_EMULATOR -avd "{{.NAME}}" -writable-system -netdelay none -netspeed full -http-proxy "http://{{.PROXY}}"
+      - ./hack/run-android.sh $ANDROID_EMULATOR {{.NAME}} {{.PROXY}}
