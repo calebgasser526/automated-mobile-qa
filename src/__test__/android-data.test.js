@@ -1,4 +1,4 @@
-appium = require("./appium.test.js");
+appium = require("./android-appium.test.js");
 assert = require("assert");
 
 function findEvent(messages, key, value) {
@@ -102,16 +102,3 @@ describe("Android Data Tests", () => {
     }
   });
 });
-
-//describe("iOS Data Tests", () => {
-//    it("tests app launch", () => {
-//        const payload = findEvent(appium.iosMessages, "appLaunch");
-//
-//        if (payload) {
-//            assert.equal(payload.properties.event, "appLaunch");
-//            assert.ok(payload.integrations["Adobe Analytics"].visitorId);
-//        } else {
-//            throw Error("Could not find event to test...");
-//        }
-//    });
-//})

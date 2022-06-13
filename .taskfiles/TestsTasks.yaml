@@ -1,0 +1,21 @@
+---
+version: "3"
+
+tasks:
+  run:
+    desc: Run all test for both iOS and Android.
+    cmds:
+      - task: run:android
+      - task: run:ios
+
+  run:android:
+    desc: Run tests for android.
+    cmds:
+      - cmd: ./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/android-data.test.js' --reporter mochawesome
+        ignore_error: true
+
+  run:ios:
+    desc: Run tests for iOS.
+    cmds:
+      - cmd: ./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/ios-data.test.js' --reporter mochawesome
+        ignore_error: true

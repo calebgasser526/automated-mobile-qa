@@ -2,6 +2,18 @@
 version: "3"
 
 vars:
+  PROXY_TARGET: "Wi-fi"
+  PROXY_IP: "127.0.0.1"
+  PROXY_PORT: "8080"
+  PROXY: "{{.PROXY_IP}}:{{PROXY_PORT}}"
+  ORIG_PROXY_IP:
+    sh: networksetup -getwebproxy 'Wi-fi' | awk '/Server:/{print $NF}'
+  ORIG_PROXY_PORT:
+    sh: networksetup -getwebproxy 'Wi-fi' | awk '/Port:/{print $NF}'
+  ORIG_SECURE_PROXY_IP:
+    sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Server:/{print $NF}'
+  ORIG_SECURE_PROXY_PORT:
+    sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Port:/{print $NF}'
   PYTHON_VERSION: "3.8.13"
   CERT_FILE: "$HOME/.mitmproxy/mitmproxy-ca-cert.cer"
   PROJECT_DIR:
@@ -13,19 +25,76 @@ includes:
   node: .taskfiles/NodeTasks.yaml
   cert: .taskfiles/CertTasks.yaml
   android: .taskfiles/AndroidTasks.yaml
+  proxy: .taskfiles/ProxyTasks.yaml
+  test: .taskfiles/TestsTasks.yaml
+  appium: .taskfiles/AppiumTasks.yaml
 
 tasks:
   default:
+    desc: Runn all tests.
     cmds:
-      - task: run
-  run:
+      - task: run:all
+
+  all:tests:
+    desc: Run all tests.
     deps: [install]
     cmds:
+      - task: proxy:setup
+      - task: appium:start
       - task: android:run
+      - task: cert:install
+      - task: test:run:android
+      - task: test:run:ios
+      - defer: { task: restore }
+      - task: report
+
+  android:test:
+    desc: Run android tests only.
+    deps: [install]
+    cmds:
+      - task: proxy:setup
+      - task: appium:start
+      - task: android:run
+      - task: cert:install
+      - task: test:run:android
+      - defer: { task: restore }
+      - task: report
+
+  ios:test:
+    desc: Run iOS tests only.
+    deps: [install]
+    cmds:
+      - task: proxy:setup
+      - task: appium:start
+      - task: test:run:ios
+      - defer: { task: restore }
+      - task: report
+
+  restore:
+    desc: Restore state after running tests.
+    cmds:
+      - task: android:stop
+      - task: appium:stop
+      - task: proxy:restore
+
+  report:
+    desc: Show test results report.
+    cmds:
+      - open mochawesome-report/mochawesome.html
 
   install:
+    desc: Install requirements for running tests.
     cmds:
       - task: init:precommit
       - task: python:depends
       - task: node:install
       - task: cert:gen
+
+  clean:
+    desc: Remove all generated project files.
+    cmds:
+      - task: android:clean
+      - task: python:clean
+      - task: node:clean
+      - rm -fr {{.PROJECT_DIR}}/mochawesome-report
+      - rm -fr $HOME/.mitmproxy

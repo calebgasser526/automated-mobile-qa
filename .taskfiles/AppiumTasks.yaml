@@ -1,0 +1,14 @@
+---
+version: "3"
+
+tasks:
+  start:
+    desc: Start appium server.
+    cmds:
+      - ./hack/run-appium.sh
+
+  stop:
+    desc: Stop appium server.
+    cmds:
+      - cmd: pkill -f appium
+        ignore_error: true

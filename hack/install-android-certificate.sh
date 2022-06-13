@@ -1,15 +1,19 @@
 #!/bin/bash
 local_adb=$1
+while ! $local_adb emu; do
+  echo "Waiting for android emulator to start." && sleep 5
+done
+
 ORIGINAL_CERT=$HOME/.mitmproxy/mitmproxy-ca-cert.cer
 CERT_NAME="$(openssl x509 -inform PEM -subject_hash_old -in $ORIGINAL_CERT | head -n 1).0"
 NEEDS_CERT=$(if $local_adb emu; then $local_adb shell 'if [ -f /system/etc/security/cacerts/$CERT_NAME ]; then echo "false"; else echo "true"; fi'; else echo "false"; fi;)
 
 function wait_for_device(){
-        ADB_BOOTED=$($local_adb wait-for-device shell getprop sys.boot_completed | tr -d '\r')
-        while [[ $ADB_BOOTED != 1 ]]; do
-            echo "Waiting for device to become available..." && sleep 2
-            ADB_BOOTED=$($local_adb wait-for-device shell getprop sys.boot_completed | tr -d '\r')
-        done
+  ADB_BOOTED=$($local_adb wait-for-device shell getprop sys.boot_completed | tr -d '\r')
+  while [[ $ADB_BOOTED != 1 ]]; do
+      echo "Waiting for android device to become available..." && sleep 5
+      ADB_BOOTED=$($local_adb wait-for-device shell getprop sys.boot_completed | tr -d '\r')
+  done
 }
 
 if ! test -f $ORIGINAL_CERT; then
