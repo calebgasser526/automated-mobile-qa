@@ -1,0 +1,19 @@
+---
+version: "3"
+
+tasks:
+  setup:
+    desc: Set proxy settings.
+    cmds:
+      - networksetup -setwebproxy "{{.PROXY_TARGET}}" {{.PROXY_IP}} {{.PROXY_PORT}}
+      - networksetup -setsecurewebproxy "{{.PROXY_TARGET}}" {{.PROXY_IP}} {{.PROXY_PORT}}
+      - networksetup -setwebproxystate "{{.PROXY_TARGET}}" on
+      - networksetup -setsecurewebproxystate "{{.PROXY_TARGET}}" on
+
+  restore:
+    desc: Restore proxy settings.
+    cmds:
+      - networksetup -setwebproxy "{{.PROXY_TARGET}}" {{.ORIG_PROXY_IP}} {{.ORIG_PROXY_PORT}}
+      - networksetup -setsecurewebproxy "{{.PROXY_TARGET}}" {{.ORIG_SECURE_PROXY_IP}} {{.ORIG_SECURE_PROXY_PORT}}
+      - networksetup -setwebproxystate "{{.PROXY_TARGET}}" off
+      - networksetup -setsecurewebproxystate "{{.PROXY_TARGET}}" off
