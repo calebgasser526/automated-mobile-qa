@@ -13,6 +13,7 @@ node_modules
 *.app
 mochawesome-report
 logs
+data/*
 
 #### Python ####
 # Byte-compiled / optimized / DLL files
