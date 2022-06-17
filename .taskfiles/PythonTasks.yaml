@@ -2,14 +2,17 @@
 version: "3"
 
 tasks:
-  default:
-    deps: [depends]
-
-  depends:
-    deps: [virt]
-    desc: Install python dependencies into the virtual environment.
+  local:test:
+    deps: [requirments]
+    desc: Run project tests. (NOT qa tests).
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirments.txt &> /dev/null
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s
+
+  requirments:
+    deps: [virt]
+    desc: Install python requirments into the virtual environment.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirments.txt
     status:
       - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/mitmproxy
 

@@ -2,6 +2,21 @@
 version: "3"
 
 tasks:
+  install:
+    desc: Install all inital dependencies.
+    cmds:
+      - task: brew
+      - task: precommit
+      - task: lima
+
+  lima:
+    deps: [brew]
+    desc: Setup lima for nerdctl.
+    cmds:
+      - limactl start --tty=false
+    preconditions:
+      - command -v limactl
+
   precommit:
     desc: Initalize pre-commit
     deps: [brew]
@@ -28,7 +43,9 @@ tasks:
         prettier
         yamllint
         go
+        lima
     status:
+      - command -v lima
       - command -v wget
       - command -v pyenv
       - command -v prettier

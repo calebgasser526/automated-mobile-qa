@@ -2,6 +2,21 @@
 version: "3"
 
 tasks:
+  run:
+    desc: Run mitm proxy with addon.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmdump -s mitmproxy_addon.py
+
+  run:cli:
+    desc: Run mitm proxy with addon.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmproxy -s mitmproxy_addon.py
+
+  run:web:
+    desc: Run mitm proxy with addon.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmweb -s mitmproxy_addon.py
+
   setup:
     desc: Set proxy settings.
     cmds:

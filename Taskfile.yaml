@@ -1,6 +1,8 @@
 ---
 version: "3"
 
+dotenv: ["config.env"]
+
 vars:
   PROXY_TARGET: "Wi-fi"
   PROXY_IP: "127.0.0.1"
@@ -19,6 +21,9 @@ vars:
   PROJECT_DIR:
     sh: "git rev-parse --show-toplevel"
 
+env:
+  PROJECT_DIR: "{{.PROJECT_DIR}}"
+
 includes:
   init: .taskfiles/InitTasks.yaml
   python: .taskfiles/PythonTasks.yaml
@@ -28,10 +33,11 @@ includes:
   proxy: .taskfiles/ProxyTasks.yaml
   test: .taskfiles/TestsTasks.yaml
   appium: .taskfiles/AppiumTasks.yaml
+  container: .taskfiles/ContainerTasks.yaml
 
 tasks:
   default:
-    desc: Runn all tests.
+    desc: Run all tests.
     cmds:
       - task: run:all
 
@@ -85,10 +91,20 @@ tasks:
   install:
     desc: Install requirements for running tests.
     cmds:
-      - task: init:precommit
-      - task: python:depends
+      - task: init:install
+      - task: python:requirements
       - task: node:install
       - task: cert:gen
+
+  proxy:
+    desc: Opens the proxy UI.
+    cmds:
+      - open http://localhost:8081
+
+  futon:
+    desc: Open couchdb interface, Futon.
+    cmds:
+      - open http://127.0.0.1:5984/_utils/
 
   clean:
     desc: Remove all generated project files.
