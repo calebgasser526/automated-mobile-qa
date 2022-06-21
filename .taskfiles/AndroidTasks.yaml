@@ -5,7 +5,6 @@ vars:
   PLATFORM: "android-30"
   IMAGE: "system-images;android-30;google_apis;x86"
   DEVICE: "pixel_4_xl"
-  PROXY: "127.0.0.1:8080"
   ANDROID_LOCAL_SDK: "{{.PROJECT_DIR}}/.android_local_sdk"
   ANDROID_HOME: "{{.ANDROID_LOCAL_SDK}}"
   ANDROID_SDK_HOME: "{{.ANDROID_LOCAL_SDK}}"

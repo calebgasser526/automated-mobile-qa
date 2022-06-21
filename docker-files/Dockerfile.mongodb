@@ -1,0 +1,43 @@
+FROM alpine:3.16.0
+
+# Add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+RUN addgroup -S mongodb
+RUN adduser -S mongodb -G mongodb
+
+# Add repositories
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/main' >> /etc/apk/repositories
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/community' >> /etc/apk/repositories
+RUN echo 'https://dl-cdn.alpinelinux.org/alpine/edge/testing/' >> /etc/apk/repositories
+RUN apk update
+
+# Install mongodb
+RUN apk add mongodb
+RUN apk add mongodb-tools
+
+# Install otherdependencies
+RUN apk --no-cache add gosu bash
+
+# Create data directories
+RUN mkdir -p /data/db /data/configdb
+RUN chown -R mongodb:mongodb /data/db /data/configdb
+
+# Define mountable directories.
+VOLUME ["/data/db", "/data/configdb"]
+
+# Define working directory.
+WORKDIR /data
+
+# Copy entry point file.
+COPY mongo-docker-entrypoint.sh /entrypoint.sh
+
+USER mongodb
+# Define default command.
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Expose ports.
+#   - 27017: process
+#   - 28017: http
+EXPOSE 27017
+EXPOSE 28017
+
+CMD ["mongod"]

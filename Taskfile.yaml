@@ -6,8 +6,9 @@ dotenv: ["config.env"]
 vars:
   PROXY_TARGET: "Wi-fi"
   PROXY_IP: "127.0.0.1"
-  PROXY_PORT: "8080"
-  PROXY: "{{.PROXY_IP}}:{{PROXY_PORT}}"
+  PROXY_PORT: "9191"
+  PROXY_WEB_PORT: "9192"
+  PROXY: "{{.PROXY_IP}}:{{.PROXY_PORT}}"
   ORIG_PROXY_IP:
     sh: networksetup -getwebproxy 'Wi-fi' | awk '/Server:/{print $NF}'
   ORIG_PROXY_PORT:
@@ -18,8 +19,7 @@ vars:
     sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Port:/{print $NF}'
   PYTHON_VERSION: "3.8.13"
   CERT_FILE: "$HOME/.mitmproxy/mitmproxy-ca-cert.cer"
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
+  PROJECT_DIR: $PWD
 
 env:
   PROJECT_DIR: "{{.PROJECT_DIR}}"

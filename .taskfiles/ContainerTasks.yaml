@@ -1,0 +1,101 @@
+---
+version: "3"
+
+tasks:
+  ps:
+    desc: List running containers.
+    cmds:
+      - lima nerdctl ps
+
+  lima:start:
+    desc: Start lima.
+    cmds:
+      - limactl start --tty=false
+
+  lima:stop:
+    desc: Stop lima.
+    cmds:
+      - limactl stop
+
+  lima:delete:
+    desc: Delete lima instance.
+    cmds:
+      - limactl delete default
+
+  lima:shell:
+    desc: Enter lima shell.
+    cmds:
+      - limactl shell default
+
+  lima:restart:
+    desc: Delete and restart the instance.
+    cmds:
+      - task: lima:stop
+      - task: lima:delete
+      - task: lima:start
+
+  proxy:
+    desc: Build and run the proxy container.
+    cmds:
+      - task: proxy:build
+      - task: proxy:run
+
+  proxy:build:
+    desc: Build proxy project container.
+    cmds:
+      - lima nerdctl build --build-arg PROXY_PORT={{.PROXY_PORT}} --build-arg PROXY_WEB_PORT={{.PROXY_WEB_PORT}} -t mtest -f {{.PROJECT_DIR}}/docker-files/Dockerfile.proxy .
+
+  proxy:run:
+    desc: Run the mtest container.
+    cmds:
+      - lima nerdctl run -it --rm -p {{.PROXY_WEB_PORT}}:{{.PROXY_WEB_PORT}} mtest
+
+  proxy:rm:
+    desc: Destory the mtest container.
+    cmds:
+      - lima nerdctl container rm mtest
+
+  mongo:build:
+    desc: Build mongodb project container.
+    cmds:
+      - lima nerdctl build -t mongodb -f {{.PROJECT_DIR}}/docker-files/Dockerfile.mongodb .
+
+  mongo:run:
+    desc: Run the mongodb container.
+    cmds:
+      - lima nerdctl run -d --name mtest-mongodb -e MONGO_INITDB_ROOT_USERNAME=mtest -e MONGO_INITDB_ROOT_PASSWORD=mtest mongo:5.0.9
+
+  mongo:rm:
+    desc: Destory the mtest container.
+    cmds:
+      - lima nerdctl container rm mongodb
+
+  build:debug:
+    desc: Build project container (with debugging.)
+    cmds:
+      - lima nerdctl build -t mtest {{.PROJECT_DIR}} --debug-full
+
+  up:build:
+    desc: Spin up project compose file and build containers.
+    cmds:
+      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d --build
+
+  up:build:debug:
+    desc: Spin up project compose file and build containers (with debugging.)
+    cmds:
+      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d --build --debug-full
+
+  up:
+    desc: Spin up project compose file.
+    cmds:
+      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d
+
+  up:debug:
+    desc: Spin up project compose file (with debugging.)
+    cmds:
+      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d --debug-full
+
+  down:
+    desc: Remove containers and networks created by project compose file.
+    cmds:
+      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml down -v
