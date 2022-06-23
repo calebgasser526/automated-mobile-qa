@@ -8,6 +8,7 @@ node_modules
 *.swo
 *.swn
 *.0
+*.cer
 .DS_Store
 *.apk
 *.app
