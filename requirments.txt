@@ -1,4 +1,0 @@
-pytest
-mitmproxy
-requests
-pymongo

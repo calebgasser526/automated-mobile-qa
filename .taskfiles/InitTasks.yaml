@@ -7,15 +7,6 @@ tasks:
     cmds:
       - task: brew
       - task: precommit
-      - task: lima
-
-  lima:
-    deps: [brew]
-    desc: Setup lima for nerdctl.
-    cmds:
-      - limactl start --tty=false
-    preconditions:
-      - command -v limactl
 
   precommit:
     desc: Initalize pre-commit
@@ -34,7 +25,7 @@ tasks:
     preconditions:
       - sh: command -v brew
         msg: |
-          Homebrew is not installed. Head over to https://brew.sh to get up and running.
+          Brew is not installed. Did you run the bootstrap script? "./hack/bootstrap.sh"
     vars:
       DEPS: >-
         wget
@@ -43,7 +34,6 @@ tasks:
         prettier
         yamllint
         go
-        lima
     status:
       - command -v lima
       - command -v wget

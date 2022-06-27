@@ -1,10 +1,11 @@
 #!/bin/bash
+
 local_adb=$1
 while ! $local_adb emu; do
   echo "Waiting for android emulator to start." && sleep 5
 done
 
-ORIGINAL_CERT=$HOME/.mitmproxy/mitmproxy-ca-cert.cer
+ORIGINAL_CERT=$2
 CERT_NAME="$(openssl x509 -inform PEM -subject_hash_old -in $ORIGINAL_CERT | head -n 1).0"
 NEEDS_CERT=$(if $local_adb emu; then $local_adb shell 'if [ -f /system/etc/security/cacerts/$CERT_NAME ]; then echo "false"; else echo "true"; fi'; else echo "false"; fi;)
 
@@ -17,7 +18,7 @@ function wait_for_device(){
 }
 
 if ! test -f $ORIGINAL_CERT; then
-  echo "[Error] No cert found! Have you generated a certificate?"
+  echo "[Error] No cert found! Have you pulled the certificate from the proxy server?"
   exit 1
 fi
 
@@ -49,5 +50,6 @@ if $NEEDS_CERT; then
   $local_adb reboot
   wait_for_device
   echo "[==] Done."
-  rm ./$CERT_NAME
+  rm $CERT_NAME
+  rm $ORIGINAL_CERT
 fi

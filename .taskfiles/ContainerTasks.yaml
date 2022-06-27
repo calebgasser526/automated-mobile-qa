@@ -1,101 +1,152 @@
 ---
 version: "3"
 
+vars:
+  MONGODB_USER: mtest
+  MONGODB_PASSWORD: mtest
+  MONGODB_PORT: 27017
+  MONGODB_HOST: mongo
+  MONGODB_URL: "mongodb://{{.MONGODB_USER}}:{{.MONGODB_PASSWORD}}@{{.MONGODB_HOST}}:{{.MONGODB_PORT}}"
+
 tasks:
-  ps:
-    desc: List running containers.
+  lima:install:
+    desc: Install lima. Needed for running containers.
     cmds:
-      - lima nerdctl ps
+      - brew install lima
+    status:
+      - command -v limactl
+    preconditions:
+      - sh: command -v brew
+        msg: |
+          Brew not installed. Did you run the bootstrap script? "./hack/bootstrap.sh"
 
   lima:start:
+    deps: [lima:install]
     desc: Start lima.
     cmds:
       - limactl start --tty=false
+    status:
+      - '[[ $(limactl list | tr -s '' '' | awk ''$2=="Running"{print $2}'') ]]'
 
   lima:stop:
+    deps: [lima:install]
     desc: Stop lima.
     cmds:
       - limactl stop
+    status:
+      - '[[ $(limactl list | tr -s '' '' | awk ''$2=="Stopped"{print $2}'') ]]'
 
-  lima:delete:
+  lima:rm:
+    deps: [lima:install]
     desc: Delete lima instance.
     cmds:
       - limactl delete default
 
   lima:shell:
+    deps: [lima:start]
     desc: Enter lima shell.
     cmds:
       - limactl shell default
 
   lima:restart:
+    deps: [lima:install]
     desc: Delete and restart the instance.
     cmds:
       - task: lima:stop
-      - task: lima:delete
+      - task: lima:rm
       - task: lima:start
 
+  ps:
+    deps: [lima:start]
+    desc: List running containers.
+    cmds:
+      - lima nerdctl ps
+    preconditions:
+      - sh: '[[ $(limactl list | tr -s '' '' | awk ''$2=="Running"{print $2}'') ]]'
+        msg: "Lima not started."
+
   proxy:
+    deps: [lima:start]
     desc: Build and run the proxy container.
     cmds:
       - task: proxy:build
       - task: proxy:run
 
+  proxy:shell:
+    deps: [lima:start]
+    desc: Drop into a shell inside the proxy container.
+    cmds:
+      - lima nerdctl exec -it mtest bash
+
   proxy:build:
+    deps: [lima:start]
     desc: Build proxy project container.
     cmds:
-      - lima nerdctl build --build-arg PROXY_PORT={{.PROXY_PORT}} --build-arg PROXY_WEB_PORT={{.PROXY_WEB_PORT}} -t mtest -f {{.PROJECT_DIR}}/docker-files/Dockerfile.proxy .
+      - lima nerdctl build --build-arg PROXY_WEB_FILE_PORT={{.PROXY_WEB_FILE_PORT}} --build-arg PROXY_PORT={{.PROXY_PORT}} --build-arg PROXY_WEB_PORT={{.PROXY_WEB_PORT}} -t mtest -f {{.PROJECT_DIR}}/docker-files/Dockerfile.proxy .
 
   proxy:run:
+    deps: [lima:start]
     desc: Run the mtest container.
     cmds:
-      - lima nerdctl run -it --rm -p {{.PROXY_WEB_PORT}}:{{.PROXY_WEB_PORT}} mtest
+      - lima nerdctl run --env-file {{.CONFIG_FILE}} --network=appiumpoc_default -it --rm -p {{.PROXY_WEB_PORT}}:{{.PROXY_WEB_PORT}} -p {{.PROXY_WEB_FILE_PORT}}:{{.PROXY_WEB_FILE_PORT}} -p {{.PROXY_WEB_PORT}}:{{.PROXY_PORT}} mtest
 
   proxy:rm:
+    deps: [lima:start]
     desc: Destory the mtest container.
     cmds:
       - lima nerdctl container rm mtest
 
-  mongo:build:
-    desc: Build mongodb project container.
-    cmds:
-      - lima nerdctl build -t mongodb -f {{.PROJECT_DIR}}/docker-files/Dockerfile.mongodb .
-
-  mongo:run:
-    desc: Run the mongodb container.
-    cmds:
-      - lima nerdctl run -d --name mtest-mongodb -e MONGO_INITDB_ROOT_USERNAME=mtest -e MONGO_INITDB_ROOT_PASSWORD=mtest mongo:5.0.9
-
-  mongo:rm:
-    desc: Destory the mtest container.
-    cmds:
-      - lima nerdctl container rm mongodb
-
   build:debug:
+    deps: [lima:start]
     desc: Build project container (with debugging.)
     cmds:
       - lima nerdctl build -t mtest {{.PROJECT_DIR}} --debug-full
 
   up:build:
+    deps: [lima:start]
     desc: Spin up project compose file and build containers.
     cmds:
-      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d --build
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --build
 
   up:build:debug:
+    deps: [lima:start]
     desc: Spin up project compose file and build containers (with debugging.)
     cmds:
-      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d --build --debug-full
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --build --debug-full
 
   up:
+    deps: [lima:start]
     desc: Spin up project compose file.
     cmds:
-      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d
+      - task: down
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d
+      - task: dashboard
 
   up:debug:
+    deps: [lima:start]
     desc: Spin up project compose file (with debugging.)
     cmds:
-      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml up -d --debug-full
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --debug-full
 
   down:
+    deps: [lima:start]
     desc: Remove containers and networks created by project compose file.
     cmds:
-      - lima nerdctl compose --env-file {{.PROJECT_DIR}}/config.env -f {{.PROJECT_DIR}}/docker-compose.yaml down -v
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml down
+
+  destroy:
+    deps: [lima:start]
+    desc: Remove containers, networks, and volumes created by project compose file.
+    cmds:
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml down -v
+
+  check:
+    desc: Check if containers are running.
+    cmds:
+      - ./hack/check-running-container.sh
+
+  dashboard:
+    deps: [check]
+    desc: Open grafana dashboard.
+    cmds:
+      - open "http://localhost:{{.GRAFANA_PORT}}/?orgId=1&kiosk"

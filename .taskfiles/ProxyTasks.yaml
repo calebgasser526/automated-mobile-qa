@@ -5,17 +5,17 @@ tasks:
   run:
     desc: Run mitm proxy with addon.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmdump -s mitmproxy_addon.py --set listen_port={{.PROXY_PORT}}
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmdump -s mitmproxy_addon.py --set confdir={{.PROJECT_DIR}} --set listen_host={{.PROXY_HOST}} --set listen_port={{.PROXY_PORT}}
 
   run:cli:
     desc: Run mitm proxy with addon.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmproxy -s mitmproxy_addon.py --set listen_port={{.PROXY_PORT}}
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmproxy -s mitmproxy_addon.py --set confdir={{.PROJECT_DIR}} --set listen_host={{.PROXY_HOST}} --set listen_port={{.PROXY_PORT}}
 
   run:web:
     desc: Run mitm proxy with addon.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmweb -s mitmproxy_addon.py --set listen_port={{.PROXY_PORT}} --set web_port={{.PROXY_WEB_PORT}}
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && mitmweb -s mitmproxy_addon.py --set confdir={{.PROJECT_DIR}} --set listen_host={{.PROXY_HOST}} --set listen_port={{.PROXY_PORT}} --set web_port={{.PROXY_WEB_PORT}} --set web_host={{.PROXY_WEB_HOST}} --set open_web_browser=false
 
   setup:
     desc: Set proxy settings.

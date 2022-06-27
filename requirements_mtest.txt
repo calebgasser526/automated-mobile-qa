@@ -1,0 +1,5 @@
+mitmproxy==8.0.0
+requests
+pymongo
+psycopg2-binary
+bson

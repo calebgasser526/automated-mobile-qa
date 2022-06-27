@@ -1,0 +1,69 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "n6CUaYq7z"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "links": [],
+      "options": {
+        "content": "# Links\n\n<a href=\"http://localhost:8095\" target=\"_blank\">Mitmproxy Dashboard</a>\n\n<a href=\"http://localhost:8081\" target=\"_blank\">MongoDB Dashboard</a>\n\n<a href=\"http://localhost:8888/?pgsql=postgres&username=postgres&db=mtest&ns=public\" target=\"_blank\">Postgres Dasboard(Adminer)</a>",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.0.1",
+      "title": "About",
+      "type": "text"
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Mobile Automated Testing",
+  "uid": "L4n6-Y3nz",
+  "version": 1,
+  "weekStart": ""
+}

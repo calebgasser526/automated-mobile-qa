@@ -3,35 +3,39 @@ version: "3"
 
 vars:
   CERT_NAME: "mitmproxy"
-  CERT_DIR: "$HOME/.mitmproxy"
+  CERT_FILE: "mitmproxy-ca-cert.cer"
+  CERT_PATH: "{{.PROJECT_DIR}}/{{.CERT_FILE}}"
 
 tasks:
   clean:
     desc: Remove mimtproxy certificates.
     cmds:
-      - rm -fr $HOME/.mitmproxy
+      - cmd: rm {{.PROJECT_DIR}}/{{.CERT_FILE}}
+        ignore_error: true
+      - cmd: rm {{.PROJECT_DIR}}/*.0
+        ignore_error: true
 
   install:
-    desc: Install certificate to android device and system.
-    deps: [system]
+    desc: Install system and android certs.
     cmds:
-      - ./hack/install-android-certificate.sh "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools/adb"
+      - task: system:install
+      - task: android:install
+
+  ios:install:
+    desc: Install certificate to system.
+    cmds:
+      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}}
+      - xcrun simctl keychain booted add-root-cert "{{.CERT_PATH}}"
+        #- sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
+    status:
+      - test "$(security find-certificate -c '{{.CERT_NAME}}' -a)"
+
+  android:install:
+    desc: Install certificate to android device and system.
+    cmds:
+      - ./hack/get-cert.sh "localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}}"
+      - ./hack/install-android-certificate.sh "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools/adb" {{.CERT_PATH}}
     preconditions:
       - sh: test -d "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools"
         msg: |
           The local android sdk does not appear to have adb. Did you run 'task android:install'?
-
-  system:
-    deps: [gen]
-    desc: Install certificate to system.
-    cmds:
-      - sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
-    status:
-      - test "$(security find-certificate -c '{{.CERT_NAME}}' -a)"
-  gen:
-    desc: Generate's certificate for mitmproxy.
-    desp: [python:depends]
-    cmds:
-      - source ./.venv/bin/activate && npm run gen-cert > /dev/null
-    status:
-      - test -f $HOME/.mitmproxy/mitmproxy-ca-cert.cer

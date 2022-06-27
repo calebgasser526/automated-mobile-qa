@@ -2,19 +2,35 @@
 version: "3"
 
 tasks:
-  local:test:
-    deps: [requirments]
-    desc: Run project tests. (NOT qa tests).
+  local:test:android:
+    deps: [requirements:local]
+    desc: Run android appium test.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s
+      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_android.py
+        ignore_error: true
 
-  requirments:
-    deps: [virt]
-    desc: Install python requirments into the virtual environment.
+  local:test:ios:
+    deps: [requirements:local]
+    desc: Run ios appium test.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirments.txt
+      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_ios.py
+        ignore_error: true
+
+  requirements:mtest:
+    deps: [virt]
+    desc: Install python requirements into the mtest container virtual environment.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirements_mtest.txt
     status:
       - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/mitmproxy
+
+  requirements:local:
+    deps: [virt]
+    desc: Install python requirements into the local virtual environment.
+    cmds:
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirements_local.txt
+    status:
+      - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/Appium_Python_Client*
 
   virt:
     desc: Create python virtual environment.

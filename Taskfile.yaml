@@ -4,11 +4,22 @@ version: "3"
 dotenv: ["config.env"]
 
 vars:
+  CONFIG_FILE: "config.env"
+  PROJECT_NAME: $PROJECT_NAME
+  PROJECT_DIR:
+    sh: pwd
   PROXY_TARGET: "Wi-fi"
   PROXY_IP: "127.0.0.1"
-  PROXY_PORT: "9191"
-  PROXY_WEB_PORT: "9192"
   PROXY: "{{.PROXY_IP}}:{{.PROXY_PORT}}"
+  PROXY_PORT: $PROXY_PORT
+  PROXY_WEB_HOST: $PROXY_WEB_HOST
+  PROXY_WEB_PORT: $PROXY_WEB_PORT
+  PROXY_WEB_FILE_PORT: $PROXY_WEB_FILE_PORT
+  POSTGRES_DB: $POSTGRES_DB
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+  ADMINER_PORT: $ADMINER_PORT
+  GRAFANA_PORT: $GRAFANA_PORT
   ORIG_PROXY_IP:
     sh: networksetup -getwebproxy 'Wi-fi' | awk '/Server:/{print $NF}'
   ORIG_PROXY_PORT:
@@ -18,11 +29,6 @@ vars:
   ORIG_SECURE_PROXY_PORT:
     sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Port:/{print $NF}'
   PYTHON_VERSION: "3.8.13"
-  CERT_FILE: "$HOME/.mitmproxy/mitmproxy-ca-cert.cer"
-  PROJECT_DIR: $PWD
-
-env:
-  PROJECT_DIR: "{{.PROJECT_DIR}}"
 
 includes:
   init: .taskfiles/InitTasks.yaml
@@ -39,7 +45,7 @@ tasks:
   default:
     desc: Run all tests.
     cmds:
-      - task: run:all
+      - echo {{.PROXY_WEB_PORT}}
 
   all:tests:
     desc: Run all tests.
@@ -48,7 +54,7 @@ tasks:
       - task: proxy:setup
       - task: appium:start
       - task: android:run
-      - task: cert:install
+      - task: cert:system:install
       - task: test:run:android
       - task: test:run:ios
       - defer: { task: restore }
@@ -58,30 +64,29 @@ tasks:
     desc: Run android tests only.
     deps: [install]
     cmds:
-      - task: proxy:setup
+      - task: container:up
       - task: appium:start
       - task: android:run
-      - task: cert:install
-      - task: test:run:android
+      - task: cert:android:install
+      - task: python:local:test:android
       - defer: { task: restore }
-      - task: report
 
   ios:test:
     desc: Run iOS tests only.
     deps: [install]
     cmds:
-      - task: proxy:setup
+      - task: container:up
       - task: appium:start
-      - task: test:run:ios
+      - task: cert:ios:install
+      - task: python:local:test:ios
       - defer: { task: restore }
-      - task: report
 
   restore:
     desc: Restore state after running tests.
     cmds:
-      - task: android:stop
-      - task: appium:stop
-      - task: proxy:restore
+      - defer: { task: android:stop }
+      - defer: { task: appium:stop }
+      - defer: { task: proxy:restore }
 
   report:
     desc: Show test results report.
@@ -92,25 +97,25 @@ tasks:
     desc: Install requirements for running tests.
     cmds:
       - task: init:install
-      - task: python:requirements
-      - task: node:install
-      - task: cert:gen
+      - task: python:requirements:local
 
-  proxy:
+  open:proxy:
     desc: Opens the proxy UI.
     cmds:
-      - open http://localhost:8081
+      - open http://{{.PROXY_WEB_HOST}}:{{.PROXY_WEB_PORT}}
 
-  futon:
-    desc: Open couchdb interface, Futon.
+  open:proxy:files:
+    desc: Opens the file server on the proxy.
     cmds:
-      - open http://127.0.0.1:5984/_utils/
+      - open http://{{.PROXY_WEB_HOST}}:{{.PROXY_WEB_FILE_PORT}}
 
   clean:
     desc: Remove all generated project files.
     cmds:
+      - task: container:destroy
+      - task: container:lima:stop
+      - task: restore
       - task: android:clean
       - task: python:clean
       - task: node:clean
-      - rm -fr {{.PROJECT_DIR}}/mochawesome-report
-      - rm -fr $HOME/.mitmproxy
+      - task: cert:clean

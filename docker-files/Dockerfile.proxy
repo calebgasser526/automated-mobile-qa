@@ -10,6 +10,7 @@ SHELL ["/bin/bash", "-c", "-i"]
 
 # Install python/pip
 ENV PYTHONUNBUFFERED=1
+ENV PROXY_WEB_FILE_PORT=${PROXY_WEB_FILE_PORT}
 RUN apk add --update --no-cache python3 python3-dev gcc libffi-dev libc-dev && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
 RUN pip3 install --no-cache --upgrade pip setuptools
@@ -24,16 +25,19 @@ RUN echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >>
 RUN echo 'eval "$(pyenv init -)"' >> $HOME/.bashrc
 
 EXPOSE ${PROXY_WEB_PORT}
+EXPOSE ${PROXY_WEB_FILE_PORT}
 EXPOSE ${PROXY_PORT}
 
 # Setup project.
+COPY config.env .
 COPY mitmproxy_addon.py .
 COPY mtest ./mtest/
-COPY requirments.txt .
+COPY requirements_mtest.txt .
 COPY Taskfile.yaml .
 COPY .taskfiles ./.taskfiles/
+COPY proxy_wrapper.sh .
 
-RUN task python:requirments
+RUN task python:requirements:mtest
 
 # Start proxy
-CMD ["task", "proxy:run:web"]
+CMD ["./proxy_wrapper.sh"]
