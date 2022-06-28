@@ -1,5 +1,5 @@
 ---
-/android-30.avdversion: "3"
+version: "3"
 
 dotenv: ["config.env"]
 
