@@ -20,7 +20,7 @@ tasks:
     deps: [virt]
     desc: Install python requirements into the mtest container virtual environment.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirements_mtest.txt
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pip install -r requirements_mtest.txt
     status:
       - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/mitmproxy
 
@@ -28,7 +28,7 @@ tasks:
     deps: [virt]
     desc: Install python requirements into the local virtual environment.
     cmds:
-      - source {{.PROJECT_DIR}}/.venv/bin/activate && pip install -r requirements_local.txt
+      - source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pip install -r requirements_local.txt
     status:
       - test -d {{.PROJECT_DIR}}/.venv/lib/python3.8/site-packages/Appium_Python_Client*
 

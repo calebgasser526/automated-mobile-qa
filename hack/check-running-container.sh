@@ -1,5 +1,6 @@
 #!/bin/bash
-
+echo "Making sure containers are running."
+sleep 3
 function container_status(){
   mtest_status=$(lima nerdctl inspect mtest | jq -r ".[0].State.Status")
   echo "mTest: ${mtest_status}"

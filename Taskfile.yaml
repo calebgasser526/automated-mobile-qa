@@ -62,11 +62,8 @@ tasks:
 
   android:test:
     desc: Run android tests only.
-    deps: [install]
+    deps: [install, container:up, appium:start, android:run]
     cmds:
-      - task: container:up
-      - task: appium:start
-      - task: android:run
       - task: cert:android:install
       - task: python:local:test:android
       - defer: { task: restore }
@@ -112,8 +109,7 @@ tasks:
   clean:
     desc: Remove all generated project files.
     cmds:
-      - task: container:destroy
-      - task: container:lima:stop
+      - task: container:lima:rm
       - task: restore
       - task: android:clean
       - task: python:clean

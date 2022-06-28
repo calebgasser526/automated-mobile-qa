@@ -14,8 +14,9 @@ if ! nc -z $PROXY_HOST $PROXY_WEB_FILE_PORT 2>/dev/null; then
   exit 1
 fi
 
-if -f $1; then
-  rm $1
+if [ -f $1 ]; then
+  echo "[==] Removing old certificate."
+  rm $2
 fi
 
 wget $1

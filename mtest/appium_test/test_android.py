@@ -1,38 +1,164 @@
 import os
 import time
-# Android environment
-from appium import webdriver
-# Options are only available since client version 2.3.0
-# If you use an older client then switch to desired_capabilities
-# instead: https://github.com/appium/python-client/pull/720
-from appium.options.android import UiAutomator2Options
-from appium.webdriver.common.appiumby import AppiumBy
+from mtest.common.appium_wrapper import Android
+from mtest.common.appium_helpers import wait_for_element
 
-from appium.webdriver.webdriver import WebDriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from appium.webdriver.common.touch_action import TouchAction
-
-options = UiAutomator2Options().\
-    set_capability('platformVersion', '11').\
-    set_capability('deviceName', 'Android Emulator').\
-    set_capability('app', os.path.abspath('./BuyRent-core-debug.apk')).\
-    set_capability('appPackage', "com.move.realtor.qa").\
-    set_capability('appActivity', "com.move.realtor.splash.SplashActivity").\
-    set_capability('appWaitActivity', "com.move.realtor.onboarding.OnBoardingActivity").\
-    set_capability('automationName', "UiAutomator2")
-# Appium1 points to http://127.0.0.1:4723/wd/hub by default
-
-driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', options=options)
-
-def wait_for_element(web_driver, locator, value, timeout_sec=10):
-    return WebDriverWait(web_driver, timeout_sec).until(EC.presence_of_element_located((locator, value)))
+android = Android()
 
 def test_zip_search():
-    el1 = wait_for_element(driver, AppiumBy.ANDROID_UIAUTOMATOR, value='new UiSelector().resourceId("com.move.realtor.qa:id/on_boarding_location")')
-    el1.click()
-    el2 = wait_for_element(driver, AppiumBy.ANDROID_UIAUTOMATOR, value='new UiSelector().resourceId("com.move.realtor.qa:id/search_edit_text")')
-    el2.click()
-    el2.set_value("66206")
-    TouchAction(driver).tap(x=1321, y=2745).perform()
-    time.sleep(3)
+    android.click_element("com.move.realtor.qa:id/on_boarding_location")
+    android.set_value("com.move.realtor.qa:id/search_edit_text", "66206")
+    android.touch(x=1321, y=2745)
+    android.click_element
+    time.sleep(10)
+
+
+#def test_save_search_srp():
+#    android = Android()
+#    # Two clicks to dispose of popup
+#    android.click_element("com.move.realtor.qa:id/save_search_top")
+#    android.click_element("com.move.realtor.qa:id/save_search_top")
+#    time.sleep(10)
+
+
+#  it("saves a listing on SRP", async () => {
+#    await driver.pause(5000);
+#    let el1 = await driver.$(
+#      "//android.widget.ImageButton[contains(@content-desc, 'Save listing')][1]"
+#    );
+#    await el1.click();
+#
+#    let el2 = await driver.$(
+#      "//android.widget.ImageButton[contains(@content-desc, 'Unsave listing')][1]"
+#    );
+#    await el2.click();
+#
+#    await new Promise((resolve) => setTimeout(resolve, 5000));
+#  });
+#
+#  it("submits a lead on SRP", async () => {
+#    let el1 = await driver.$(
+#      "//android.widget.Button[contains(@resource-id, 'lead_button')]"
+#    );
+#    await el1.click();
+#    await driver.pause(5000);
+#    let el2 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Name')]"
+#    );
+#    await el2.click();
+#    await driver.pause(2000);
+#    await el2.setValue("Test Test");
+#    await driver.pause(2000);
+#
+#    let el3 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Email')]"
+#    );
+#    await el3.click();
+#    await driver.pause(2000);
+#    await el3.setValue("moveqatest@test.com");
+#    await driver.pause(2000);
+#
+#    let el4 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Phone')]"
+#    );
+#    await el4.click();
+#    await driver.pause(2000);
+#    await el4.setValue("8162859038");
+#    await driver.pause(2000);
+#
+#    let el5 = await driver.$("//android.widget.FrameLayout");
+#    await el5.click();
+#
+#    let el6 = await driver.$(
+#      "//android.widget.Button[contains(@resource-id, 'advertiser_lead_send_button')]"
+#    );
+#    await el6.click();
+#
+#    await new Promise((resolve) => setTimeout(resolve, 5000));
+#  });
+#
+#  it("navigates to a listing", async () => {
+#    let el1 = await driver.$(
+#      "//android.widget.ImageView[contains(@resource-id, 'listingImageView')]"
+#    );
+#    await el1.click();
+#
+#    await new Promise((resolve) => setTimeout(resolve, 5000));
+#  });
+#
+#  it("saves a listing on LDP", async () => {
+#    let el1 = await driver.$(
+#      "//android.widget.Button[contains(@content-desc, 'Save listing')]"
+#    );
+#    await el1.click();
+#
+#    await new Promise((resolve) => setTimeout(resolve, 5000));
+#  });
+#
+#  it("submits a text lead on LDP", async () => {
+#    let el1 = await driver.$(
+#      "//android.widget.Button[contains(@content-desc, 'Text')]"
+#    );
+#    await el1.click();
+#
+#    let el2 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Mobile phone number')]"
+#    );
+#    await el2.click();
+#    await driver.pause(2000);
+#    await el2.setValue("8164828922");
+#    await driver.pause(2000);
+#
+#    let el3 = await driver.$("//android.widget.FrameLayout");
+#    await el3.click();
+#
+#    let el4 = await driver.$(
+#      "//android.widget.Button[contains(@content-desc, 'Text me')]"
+#    );
+#    await el4.click();
+#
+#    await new Promise((resolve) => setTimeout(resolve, 5000));
+#  });
+#
+#  it("submits a lead on LDP", async () => {
+#    await driver.pause(5000);
+#    let el1 = await driver.$(
+#      "//android.widget.Button[contains(@content-desc, 'Contact agent')]"
+#    );
+#    await el1.click();
+#
+#    await driver.pause(5000);
+#    let el2 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Name')]"
+#    );
+#    await el2.click();
+#    await driver.pause(2000);
+#    await el2.setValue("Test Test");
+#    await driver.pause(2000);
+#
+#    let el3 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Email')]"
+#    );
+#    await el3.click();
+#    await driver.pause(2000);
+#    await el3.setValue("moveqatest@test.com");
+#    await driver.pause(2000);
+#
+#    let el4 = await driver.$(
+#      "//android.widget.EditText[contains(@text, 'Phone')]"
+#    );
+#    await el4.click();
+#    await driver.pause(2000);
+#    await el4.setValue("8162859038");
+#    await driver.pause(2000);
+#
+#    let el5 = await driver.$("//android.widget.FrameLayout");
+#    await el5.click();
+#
+#    let el6 = await driver.$(
+#      "//android.widget.Button[contains(@content-desc, 'Send message')]"
+#    );
+#    await el6.click();
+#
+#    await new Promise((resolve) => setTimeout(resolve, 5000));
+#  });

@@ -37,7 +37,7 @@ tasks:
       - '[[ $(limactl list | tr -s '' '' | awk ''$2=="Stopped"{print $2}'') ]]'
 
   lima:rm:
-    deps: [lima:install]
+    deps: [lima:stop]
     desc: Delete lima instance.
     cmds:
       - limactl delete default

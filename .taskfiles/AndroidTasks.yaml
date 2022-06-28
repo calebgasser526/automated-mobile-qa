@@ -109,11 +109,18 @@ tasks:
 
   avd:
     desc: Create avd for local android emulator.
-    deps: [emulator]
+    deps: [emulator, avd:clean]
     cmds:
       - $AVD_MANAGER create avd -d "{{.DEVICE}}" -n "{{.NAME}}" -k "{{.IMAGE}}" --force
     status:
       - test -d "{{.ANDROID_LOCAL_SDK}}/.android/avd/android-30.avd"
+
+  avd:clean:
+    desc: Remove avd.
+    cmds:
+      - rm -fr {{.ANDROID_LOCAL_SDK}}/.android/avd/
+    status:
+      - test ! -d "{{.ANDROID_LOCAL_SDK}}/.android/avd/android-30.avd"
 
   install:
     desc: Install local android environment.

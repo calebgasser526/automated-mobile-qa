@@ -1,2 +1,4 @@
+psycopg2-binary
+pandas
 pytest
 Appium-Python-Client==2.4.0

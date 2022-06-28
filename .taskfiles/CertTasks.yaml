@@ -24,7 +24,7 @@ tasks:
   ios:install:
     desc: Install certificate to system.
     cmds:
-      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}}
+      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}} {{.CERT_FILE}}
       - xcrun simctl keychain booted add-root-cert "{{.CERT_PATH}}"
         #- sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
     status:
@@ -33,7 +33,7 @@ tasks:
   android:install:
     desc: Install certificate to android device and system.
     cmds:
-      - ./hack/get-cert.sh "localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}}"
+      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}} {{.CERT_FILE}}
       - ./hack/install-android-certificate.sh "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools/adb" {{.CERT_PATH}}
     preconditions:
       - sh: test -d "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools"

@@ -36,6 +36,8 @@ services:
     image: postgres
     container_name: postgres
     restart: always
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
