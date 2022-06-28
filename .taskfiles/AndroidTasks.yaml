@@ -120,7 +120,7 @@ tasks:
     cmds:
       - rm -fr {{.ANDROID_LOCAL_SDK}}/.android/avd/
     status:
-      - test ! -d "{{.ANDROID_LOCAL_SDK}}/.android/avd/android-30.avd"
+      - test ! -d "{{.ANDROID_LOCAL_SDK}}/.android/avd"
 
   install:
     desc: Install local android environment.
