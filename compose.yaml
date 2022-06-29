@@ -13,8 +13,6 @@ services:
       - ${PROXY_WEB_FILE_PORT}:${PROXY_WEB_FILE_PORT}
     volumes:
       - mtest-mitm:/src/.mitmproxy
-    extra_hosts:
-      host.docker.internal: 127.0.0.1
     depends_on:
       - postgres
 
