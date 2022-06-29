@@ -8,6 +8,8 @@ vars:
   PROJECT_NAME: $PROJECT_NAME
   PROJECT_DIR:
     sh: pwd
+  ANDROID_APK: "{{.PROJECT_DIR}}/BuyRent-core-debug.apk"
+  IOS_APP: "{{.PROJECT_DIR}}/Realtor.com.app"
   PROXY_TARGET: "Wi-fi"
   PROXY_IP: "127.0.0.1"
   PROXY: "{{.PROXY_IP}}:{{.PROXY_PORT}}"
@@ -28,7 +30,7 @@ vars:
     sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Server:/{print $NF}'
   ORIG_SECURE_PROXY_PORT:
     sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Port:/{print $NF}'
-  PYTHON_VERSION: "3.8.13"
+  PYTHON_VERSION: "3.9.12"
 
 includes:
   init: .taskfiles/InitTasks.yaml
@@ -65,7 +67,7 @@ tasks:
     deps: [install, container:up, appium:start, android:run]
     cmds:
       - task: cert:android:install
-      - task: python:local:test:android
+      - task: test:run:android
       - defer: { task: restore }
 
   ios:test:
@@ -85,16 +87,10 @@ tasks:
       - defer: { task: appium:stop }
       - defer: { task: proxy:restore }
 
-  report:
-    desc: Show test results report.
-    cmds:
-      - open mochawesome-report/mochawesome.html
-
   install:
     desc: Install requirements for running tests.
     cmds:
       - task: init:install
-      - task: python:requirements:local
 
   open:proxy:
     desc: Opens the proxy UI.

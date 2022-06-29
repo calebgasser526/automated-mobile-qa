@@ -29,7 +29,6 @@ tasks:
     vars:
       DEPS: >-
         wget
-        pyenv
         pre-commit
         prettier
         yamllint
@@ -37,7 +36,6 @@ tasks:
     status:
       - command -v lima
       - command -v wget
-      - command -v pyenv
       - command -v prettier
       - command -v pre-commit
       - command -v yamllint

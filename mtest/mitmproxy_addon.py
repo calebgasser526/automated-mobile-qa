@@ -1,9 +1,8 @@
 import time
 import uuid
 import json
-from bson import json_util
 from mitmproxy import ctx
-from mtest.data import postgresql
+from data import postgresql
 
 def convert_headers(headers):
     output = {}

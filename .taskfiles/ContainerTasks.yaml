@@ -1,4 +1,3 @@
----
 version: "3"
 
 vars:
@@ -72,23 +71,27 @@ tasks:
       - task: proxy:build
       - task: proxy:run
 
-  proxy:shell:
+  proxy:sh:
     deps: [lima:start]
     desc: Drop into a shell inside the proxy container.
     cmds:
-      - lima nerdctl exec -it mtest bash
+      - lima nerdctl run -it mtest bash
+    preconditions:
+      - sh: lima nerdctl image ls -q
+        msg: |
+          Images doesn't appear to be present. Did you run `task container:proxy:build`?
 
   proxy:build:
     deps: [lima:start]
     desc: Build proxy project container.
     cmds:
-      - lima nerdctl build --build-arg PROXY_WEB_FILE_PORT={{.PROXY_WEB_FILE_PORT}} --build-arg PROXY_PORT={{.PROXY_PORT}} --build-arg PROXY_WEB_PORT={{.PROXY_WEB_PORT}} -t mtest -f {{.PROJECT_DIR}}/docker-files/Dockerfile.proxy .
+      - lima nerdctl build --build-arg ANDROID_APK={{.ANDROID_APK}} --build-arg IOS_APP={{.IOS_APP}} --build-arg PROXY_WEB_FILE_PORT={{.PROXY_WEB_FILE_PORT}} --build-arg PROXY_PORT={{.PROXY_PORT}} --build-arg PROXY_WEB_PORT={{.PROXY_WEB_PORT}} -t mtest -f {{.PROJECT_DIR}}/docker-files/Dockerfile.proxy .
 
   proxy:run:
     deps: [lima:start]
     desc: Run the mtest container.
     cmds:
-      - lima nerdctl run --env-file {{.CONFIG_FILE}} --network=appiumpoc_default -it --rm -p {{.PROXY_WEB_PORT}}:{{.PROXY_WEB_PORT}} -p {{.PROXY_WEB_FILE_PORT}}:{{.PROXY_WEB_FILE_PORT}} -p {{.PROXY_WEB_PORT}}:{{.PROXY_PORT}} mtest
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up mtest -d --build
 
   proxy:rm:
     deps: [lima:start]

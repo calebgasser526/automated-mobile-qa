@@ -11,7 +11,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.touch_action import TouchAction
 
 
-
 ios_options = XCUITestOptions().\
     set_capability('autoAcceptAlerts', 'true').\
     set_capability('platformName', 'iOS').\
@@ -27,12 +26,12 @@ class Android:
         self.options = UiAutomator2Options().\
             set_capability('platformVersion', '11').\
             set_capability('deviceName', 'Android Emulator').\
-            set_capability('app', os.path.abspath('./BuyRent-core-debug.apk')).\
+            set_capability('app', os.environ["ANDROID_APK"]).\
             set_capability('appPackage', "com.move.realtor.qa").\
             set_capability('appActivity', "com.move.realtor.splash.SplashActivity").\
             set_capability('appWaitActivity', "com.move.realtor.onboarding.OnBoardingActivity").\
             set_capability('automationName', "UiAutomator2")
-        self.driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', options=self.options)
+        self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
 
     def click_element(self, resourceId):
         element = wait_for_element(self.driver, AppiumBy.ANDROID_UIAUTOMATOR, value=f'new UiSelector().resourceId("{resourceId}")')

@@ -9,8 +9,6 @@ node_modules
 *.swn
 *.0
 .DS_Store
-*.apk
-*.app
 mochawesome-report
 logs
 

@@ -1,8 +1,6 @@
 import psycopg2
 import os
 import platform
-import pandas as pd
-import json
 from psycopg2.extras import Json
 
 host = "localhost"
@@ -52,8 +50,6 @@ def handler(value):
         return value
 
 def insert_to_table(table_name, info):
-    #info_convert = convert_dict(info)
-    #info = info.to_json(orient='records', default_handler=handler)
     cursor = connection.cursor()
     create_table = f"""CREATE TABLE IF NOT EXISTS {table_name} (
         id serial NOT NULL primary key,

@@ -28,12 +28,12 @@ EXPOSE ${PROXY_PORT}
 
 # Setup project.
 COPY config.env .
-COPY mitmproxy_addon.py .
 COPY mtest ./mtest/
 COPY requirements_mtest.txt .
 COPY Taskfile.yaml .
 COPY .taskfiles ./.taskfiles/
 COPY proxy_wrapper.sh .
+COPY conftest.py .
 COPY hack/container_init.sh .
 
 RUN ./container_init.sh

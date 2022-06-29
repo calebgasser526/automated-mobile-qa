@@ -3,7 +3,6 @@ version: "3"
 
 tasks:
   local:test:android:
-    deps: [requirements:local]
     desc: Run android appium test.
     cmds:
       - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_android.py
@@ -45,6 +44,8 @@ tasks:
     cmds:
       - pyenv install -s {{.PYTHON_VERSION}}
       - pyenv global {{.PYTHON_VERSION}}
+    status:
+      - test "$(python --version)" -eq "Python {{.PYTHON_VERSION}}"
     preconditions:
       - sh: command -v pyenv
         msg: |

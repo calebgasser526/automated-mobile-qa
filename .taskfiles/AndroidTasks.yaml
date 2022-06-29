@@ -109,7 +109,7 @@ tasks:
 
   avd:
     desc: Create avd for local android emulator.
-    deps: [emulator]
+    deps: [emulator, avd:clean]
     cmds:
       - $AVD_MANAGER create avd -d "{{.DEVICE}}" -n "{{.NAME}}" -k "{{.IMAGE}}" --force
     status:
@@ -118,7 +118,8 @@ tasks:
   avd:clean:
     desc: Remove avd.
     cmds:
-      - rm -fr {{.ANDROID_LOCAL_SDK}}/.android/avd/
+      - cmd: rm -fr {{.ANDROID_LOCAL_SDK}}/.android/avd/
+        ignore_error: true
     status:
       - test ! -d "{{.ANDROID_LOCAL_SDK}}/.android/avd"
 
