@@ -132,4 +132,5 @@ tasks:
     desc: Run local android emulator.
     deps: [install]
     cmds:
+      - task: stop
       - ./hack/run-android.sh $ANDROID_EMULATOR {{.NAME}} {{.PROXY}}

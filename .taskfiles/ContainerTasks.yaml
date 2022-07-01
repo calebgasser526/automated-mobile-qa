@@ -81,10 +81,18 @@ tasks:
         msg: |
           Images doesn't appear to be present. Did you run `task container:proxy:build`?
 
+  proxy:rebuild:
+    deps: [lima:start]
+    desc: Destroy running containers and rebuild the project.
+    cmds:
+      - task: destroy
+      - task: proxy:build
+
   proxy:build:
     deps: [lima:start]
     desc: Build proxy project container.
     cmds:
+      - task: down
       - lima nerdctl build --build-arg ANDROID_APK={{.ANDROID_APK}} --build-arg IOS_APP={{.IOS_APP}} --build-arg PROXY_WEB_FILE_PORT={{.PROXY_WEB_FILE_PORT}} --build-arg PROXY_PORT={{.PROXY_PORT}} --build-arg PROXY_WEB_PORT={{.PROXY_WEB_PORT}} -t mtest -f {{.PROJECT_DIR}}/docker-files/Dockerfile.proxy .
 
   proxy:run:
@@ -103,18 +111,21 @@ tasks:
     deps: [lima:start]
     desc: Build project container (with debugging.)
     cmds:
+      - task: down
       - lima nerdctl build -t mtest {{.PROJECT_DIR}} --debug-full
 
   up:build:
     deps: [lima:start]
     desc: Spin up project compose file and build containers.
     cmds:
+      - task: down
       - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --build
 
   up:build:debug:
     deps: [lima:start]
     desc: Spin up project compose file and build containers (with debugging.)
     cmds:
+      - task: down
       - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --build --debug-full
 
   up:

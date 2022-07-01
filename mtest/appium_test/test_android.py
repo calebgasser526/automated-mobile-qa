@@ -1,7 +1,5 @@
-import os
 import time
 from mtest.common.appium_wrapper import Android
-from mtest.common.appium_helpers import wait_for_element
 
 android = Android()
 
@@ -9,7 +7,7 @@ def test_zip_search():
     android.click_element("com.move.realtor.qa:id/on_boarding_location")
     android.set_value("com.move.realtor.qa:id/search_edit_text", "66206")
     android.touch(x=1321, y=2745)
-    android.click_element
+    android.click_element("com.move.realtor.qa:id/listSwitchViewBtn")
     time.sleep(10)
 
 

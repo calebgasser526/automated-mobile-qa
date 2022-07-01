@@ -1,13 +1,36 @@
+import time
 import os
-form .common.appium_wrapper import ios_driver
-from .common.appium_helpers import wait_for_element
+from mtest.common.appium_helpers import wait_for_element
+from appium.options.ios import XCUITestOptions
+from appium import webdriver
+from appium.webdriver.common.appiumby import AppiumBy
+
+# For W3C actions
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.pointer_input import PointerInput
 
 
 def test_zip_search():
-    driver = ios_driver()
-    el1 = driver.find_element(by=AppiumBy.IOS_UIAUTOMATION, value='new UiSelector().resourceId("com.move.realtor.qa:id/on_boarding_location")')
+    options = XCUITestOptions().\
+       set_capability('autoAcceptAlerts', 'true').\
+       set_capability('platformName', 'iOS').\
+       set_capability('platformVersion', '15.0').\
+       set_capability('deviceName', 'iPhone Simulator').\
+       set_capability('app', os.environ["IOS_APP"]).\
+       set_capability('automationName', "XCUITest")
+    driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=options)
+    el1 = wait_for_element(driver, AppiumBy.ACCESSIBILITY_ID, "closeButton")
     el1.click()
-    el2 = wait_for_element(driver, AppiumBy.IOS_UIAUTOMATION, value='new UiSelector().resourceId("com.move.realtor.qa:id/search_edit_text")')
+    el2 = wait_for_element(driver, AppiumBy.CLASS_NAME, "//XCUIElementTypeApplication[@name=\"(d)Realtor.com\"]/XCUIElementTypeWindow/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeTextField")
     el2.click()
-    el2.set_value("66206")
-    TouchAction(driver).tap(x=1321, y=2745).perform()
+    el3 = wait_for_element(driver, AppiumBy.ACCESSIBILITY_ID, value="City, ZIP, School, or Address")
+    el3.send_keys("66206")
+    actions = ActionChains(driver)
+    actions.w3c_actions = ActionBuilder(driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch"))
+    actions.w3c_actions.pointer_action.move_to_location(326, 711)
+    actions.w3c_actions.pointer_action.pointer_down()
+    actions.w3c_actions.pointer_action.pause(0.1)
+    actions.w3c_actions.pointer_action.release()
+    actions.perform()

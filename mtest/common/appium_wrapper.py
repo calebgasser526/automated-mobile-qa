@@ -11,14 +11,30 @@ from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.touch_action import TouchAction
 
 
-ios_options = XCUITestOptions().\
-    set_capability('autoAcceptAlerts', 'true').\
-    set_capability('platformName', 'iOS').\
-    set_capability('platformVersion', '15.0').\
-    set_capability('deviceName', 'iPhone Simulator').\
-    set_capability('app', os.path.abspath('./Realtor.com.app')).\
-    set_capability('automationName', "XCUITest")
 
+class IOS:
+
+    def __init__(self):
+        self.options = XCUITestOptions().\
+            set_capability('autoAcceptAlerts', 'true').\
+            set_capability('platformName', 'iOS').\
+            set_capability('platformVersion', '14.0').\
+            set_capability('deviceName', 'iPhone Simulator').\
+            set_capability('app', os.path.abspath('./Realtor.com.app')).\
+            set_capability('automationName', "XCUITest")
+        self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
+
+    def click_element(self, resourceId):
+        element = wait_for_element(self.driver, AppiumBy.IOS_UIAUTOMATION, value=f'new UiSelector().resourceId("{resourceId}")')
+        element.click()
+
+    def set_value(self, resourceId, value):
+        element = wait_for_element(self.driver, AppiumBy.IOS_UIAUTOMATION, value=f'new UiSelector().resourceId("{resourceId}")')
+        element.click()
+        element.set_value(value)
+
+    def touch(self, x, y):
+        TouchAction(self.driver).tap(x=1321, y=2745).perform()
 
 class Android:
 

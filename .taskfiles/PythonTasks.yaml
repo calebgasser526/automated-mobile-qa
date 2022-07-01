@@ -5,13 +5,14 @@ tasks:
   local:test:android:
     desc: Run android appium test.
     cmds:
+      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python ./mtest/set_test_id.py
       - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_android.py
         ignore_error: true
 
   local:test:ios:
-    deps: [requirements:local]
     desc: Run ios appium test.
     cmds:
+      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python ./mtest/set_test_id.py
       - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_ios.py
         ignore_error: true
 

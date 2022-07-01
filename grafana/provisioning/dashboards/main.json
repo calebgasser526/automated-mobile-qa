@@ -46,8 +46,9 @@
         "type": "postgres",
         "uid": "n6CUaYq7z"
       },
+      "description": "",
       "gridPos": {
-        "h": 7,
+        "h": 14,
         "w": 4,
         "x": 0,
         "y": 1
@@ -55,12 +56,333 @@
       "id": 4,
       "links": [],
       "options": {
-        "content": "<a href=\"http://localhost:8095\" target=\"_blank\">Mitmproxy Dashboard</a>\n\n<a href=\"http://localhost:8081\" target=\"_blank\">MongoDB Dashboard</a>\n\n<a href=\"http://localhost:8888/?pgsql=postgres&username=postgres&db=mtest&ns=public\" target=\"_blank\">Postgres Dasboard(Adminer)</a>\n\nPassword for Adminer dashboard is \"postgres\".",
+        "content": "# Proxy data\n\nIf you would like to view the proxied data as the test are running please visit this dashboard.\n\n<a href=\"http://localhost:8095\" target=\"_blank\">Mitmproxy Dashboard</a>\n\n# Database\n\nIf you would like to view the data this dash board uses, which is stored in a postgres database, please visit this dashboard. **Password is: postgres**\n<a href=\"http://localhost:8888/?pgsql=postgres&username=postgres&db=mtest&ns=public\" target=\"_blank\">Postgres Dasboard(Adminer)</a>",
         "mode": "markdown"
       },
       "pluginVersion": "9.0.1",
-      "title": "Links",
+      "title": "Abount",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 4,
+        "y": 1
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() as time,\n  count((tr.info ->> 'passed')) as pass\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE (tr.info ->> 'passed') = 'true'\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() as time,\n  count((tr.info ->> 'failed')) as fail\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE (tr.info ->> 'failed') = 'true'\n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "All Tests (Appium)",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 4,
+        "y": 8
+      },
+      "id": 27,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() as time,\n  count((tr.info ->> 'passed')) as pass\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE (tr.info ->> 'passed') = 'true'\nAND platform = 'Android'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() as time,\n  count((tr.info ->> 'failed')) as fail\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE (tr.info ->> 'failed') = 'true'\nAND platform = 'Android'\n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Android Tests (Appium)",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 7,
+        "y": 8
+      },
+      "id": 28,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() as time,\n  count((tr.info ->> 'passed')) as pass\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE (tr.info ->> 'passed') = 'true'\nAND platform = 'IOS'\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() as time,\n  count((tr.info ->> 'failed')) as fail\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE (tr.info ->> 'failed') = 'true'\nAND platform = 'IOS'\n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "IOS Tests (Appium)",
+      "type": "piechart"
     },
     {
       "collapsed": false,
@@ -68,11 +390,24 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 15
+      },
+      "id": 30,
+      "panels": [],
+      "title": "Data Test Results",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
       },
       "id": 21,
       "panels": [],
-      "title": "Test Results",
+      "title": "Appium Test Results",
       "type": "row"
     },
     {
@@ -89,23 +424,184 @@
             "align": "auto",
             "displayMode": "auto",
             "filterable": true,
-            "inspect": false
+            "inspect": true
           },
           "mappings": [
             {
               "options": {
-                "failed": {
-                  "color": "red",
-                  "index": 1,
-                  "text": "FAIL"
-                },
-                "passed": {
-                  "color": "green",
+                "pattern": "^.*::(.*)$",
+                "result": {
                   "index": 0,
-                  "text": "PASS"
+                  "text": "$1"
                 }
               },
-              "type": "value"
+              "type": "regex"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "test_id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 311
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "test"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "platform"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 94
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 157
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 19,
+      "interval": "1s",
+      "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": ["count"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "duration(seconds)"
+          }
+        ]
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'Android'\nAND info ->> 'outcome' = 'passed'\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["info"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "test_results",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Android - PASS",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "duration": 3,
+              "outcome": 4,
+              "platform": 0,
+              "test": 2,
+              "test_id": 1
+            },
+            "renameByName": {
+              "duration": "duration(seconds)"
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [
+            {
+              "options": {
+                "pattern": "^.*::(.*)$",
+                "result": {
+                  "index": 0,
+                  "text": "$1"
+                }
+              },
+              "type": "regex"
             }
           ],
           "thresholds": {
@@ -139,19 +635,228 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 454
+                "value": 176
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "platform"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 94
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 157
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration(seconds)"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 23,
+      "interval": "1s",
+      "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": ["count"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'IOS'\nAND info ->> 'outcome' = 'passed'\nORDER BY 1",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["info"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "test_id",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "iOS - PASS",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "duration": 3,
+              "outcome": 4,
+              "platform": 0,
+              "test": 2,
+              "test_id": 1
+            },
+            "renameByName": {
+              "duration": "duration(seconds)"
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [
+            {
+              "options": {
+                "pattern": "^.*::(.*)$",
+                "result": {
+                  "index": 0,
+                  "text": "$1"
+                }
+              },
+              "type": "regex"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "test_id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 311
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "test"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "platform"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 94
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 157
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration(seconds)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 205
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 26
       },
-      "id": 19,
+      "id": 22,
       "interval": "1s",
       "options": {
         "footer": {
@@ -174,7 +879,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  info ->> 'test_id' as test_id,\n  info ->> 'node_id' as test,\n  info ->> 'outcome' as outcome\nFROM test_results\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
+          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'Android'\nAND info ->> 'outcome' = 'failed'\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -196,7 +901,198 @@
           ]
         }
       ],
-      "title": "Appium - Android",
+      "title": "Android - FAIL",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "duration": 3,
+              "outcome": 4,
+              "platform": 0,
+              "test": 2,
+              "test_id": 1
+            },
+            "renameByName": {
+              "duration": "duration(seconds)"
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [
+            {
+              "options": {
+                "pattern": "^.*::(.*)$",
+                "result": {
+                  "index": 0,
+                  "text": "$1"
+                }
+              },
+              "type": "regex"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "test_id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 311
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "test"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 176
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "platform"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 94
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 157
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration(seconds)"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 24,
+      "interval": "1s",
+      "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": ["count"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'IOS'\nAND info ->> 'outcome' = 'failed'\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["info"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "test_results",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "iOS - FAIL",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "duration": 3,
+              "outcome": 4,
+              "platform": 0,
+              "test": 2,
+              "test_id": 1
+            },
+            "renameByName": {
+              "duration": "duration(seconds)"
+            }
+          }
+        }
+      ],
       "transparent": true,
       "type": "table"
     },
@@ -206,7 +1102,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 33
       },
       "id": 14,
       "panels": [],
@@ -225,7 +1121,7 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "displayMode": "json-view",
             "filterable": true,
             "inspect": true
           },
@@ -263,7 +1159,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 34
       },
       "id": 16,
       "interval": "1s",
@@ -325,7 +1221,7 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "displayMode": "json-view",
             "filterable": true,
             "inspect": true
           },
@@ -334,7 +1230,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -362,7 +1259,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 43
       },
       "id": 17,
       "interval": "1s",
@@ -418,7 +1315,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 52
       },
       "id": 10,
       "panels": [],
@@ -438,6 +1335,7 @@
           "custom": {
             "align": "auto",
             "displayMode": "json-view",
+            "filterable": true,
             "inspect": true
           },
           "mappings": [],
@@ -445,7 +1343,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -473,7 +1372,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 53
       },
       "id": 6,
       "interval": "1s",
@@ -544,7 +1443,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -572,7 +1472,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 37
+        "y": 53
       },
       "id": 8,
       "interval": "1s",
@@ -652,6 +1552,6 @@
   "timezone": "",
   "title": "Mobile Automated Testing",
   "uid": "L4n6-Y3nz",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }

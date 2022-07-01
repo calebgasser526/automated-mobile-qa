@@ -29,6 +29,7 @@ tasks:
     vars:
       DEPS: >-
         wget
+        lima
         pre-commit
         prettier
         yamllint

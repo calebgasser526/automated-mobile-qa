@@ -15,25 +15,24 @@ tasks:
       - cmd: rm {{.PROJECT_DIR}}/*.0
         ignore_error: true
 
-  install:
-    desc: Install system and android certs.
+  get:
+    desc: Download the proxy cert from the container.
     cmds:
-      - task: system:install
-      - task: android:install
+      - rm {{.PROJECT_DIR}}/mitmproxy-*
+      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}} {{.CERT_FILE}}
 
-  ios:install:
+  system:install:
+    deps: [get]
     desc: Install certificate to system.
     cmds:
-      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}} {{.CERT_FILE}}
-      - xcrun simctl keychain booted add-root-cert "{{.CERT_PATH}}"
-        #- sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
-    status:
-      - test "$(security find-certificate -c '{{.CERT_NAME}}' -a)"
+      - cmd: sudo security delete-certificate -c mitmproxy /Library/Keychains/System.keychain
+        ignore_error: true
+      - sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
 
   android:install:
-    desc: Install certificate to android device and system.
+    deps: [get]
+    desc: Install certificate to android device.
     cmds:
-      - ./hack/get-cert.sh localhost:{{.PROXY_WEB_FILE_PORT}}/{{.CERT_FILE}} {{.CERT_FILE}}
       - ./hack/install-android-certificate.sh "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools/adb" {{.CERT_PATH}}
     preconditions:
       - sh: test -d "{{.PROJECT_DIR}}/.android_local_sdk/platform-tools"

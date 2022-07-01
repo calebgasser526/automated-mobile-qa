@@ -1,10 +1,6 @@
 ---
 version: "3"
 
-vars:
-  APPIUM_HOSTNAME:
-    sh: hostname
-
 tasks:
   run:
     desc: Run all test for both iOS and Android.
@@ -15,11 +11,11 @@ tasks:
   run:android:
     desc: Run tests for android.
     cmds:
-      - cmd: lima nerdctl exec -it -e ANDROID_APK={{.ANDROID_APK}} -e IOS_APP={{.IOS_APP}} -e APPIUM_HOSTNAME={{.APPIUM_HOSTNAME}} mtest task python:local:test:android
+      - cmd: lima nerdctl exec -e TEST_PLATFORM=Android -e TEST_ID={{.ANDROID_TEST_UUID}} -e ANDROID_APK={{.ANDROID_APK}} -e IOS_APP={{.IOS_APP}} mtest task python:local:test:android
         ignore_error: true
 
   run:ios:
     desc: Run tests for iOS.
     cmds:
-      - cmd: ./node_modules/.bin/mocha --timeout 100000 --config .mocharc.js 'src/__test__/ios-data.test.js' --reporter mochawesome
+      - cmd: lima nerdctl exec -e TEST_PLATFORM=IOS -e TEST_ID={{.IOS_TEST_UUID}} -e ANDROID_APK={{.ANDROID_APK}} -e IOS_APP={{.IOS_APP}} mtest task python:local:test:ios
         ignore_error: true
