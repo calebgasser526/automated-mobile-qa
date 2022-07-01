@@ -35,7 +35,7 @@ class DataCapture:
             try:
                 content = json.loads(flow.request.get_text())
             except:
-                content = flow.request.text
+                content = flow.request.get_text().decode('unicode_escape')
         else:
             content = {}
         run_id = postgresql.get_test_id()
@@ -43,7 +43,7 @@ class DataCapture:
         payload = {
                 "run_id": str(run_id),
                 "timestamp": int(time.time()),
-                "ur": flow.request.url,
+                "url": flow.request.url,
                 "host": flow.request.host,
                 "port": flow.request.port,
                 "method": flow.request.method,
@@ -66,7 +66,7 @@ class DataCapture:
             try:
                 content = json.loads(flow.request.get_text())
             except:
-                content = flow.response.text
+                content = flow.response.get_text().decode('unicode_escape')
         else:
             content = {}
         run_id = postgresql.get_test_id()

@@ -1,3 +1,0 @@
-psycopg2-binary
-pytest
-Appium-Python-Client==2.4.0

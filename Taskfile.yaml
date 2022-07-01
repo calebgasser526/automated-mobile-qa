@@ -116,7 +116,7 @@ tasks:
     deps: [install, container:up, appium:start]
     cmds:
       - cmd: xcrun simctl shutdown all
-        ignore_errors: true
+        ignore_error: true
       - task: cert:system:install
       - task: proxy:setup
       - task: test:run:ios

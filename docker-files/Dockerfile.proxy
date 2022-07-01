@@ -28,8 +28,7 @@ EXPOSE ${PROXY_PORT}
 
 # Setup project.
 COPY config.env .
-COPY mtest ./mtest/
-COPY requirements_mtest.txt .
+COPY requirements.txt .
 COPY Taskfile.yaml .
 COPY .taskfiles ./.taskfiles/
 COPY proxy_wrapper.sh .

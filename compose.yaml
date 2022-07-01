@@ -12,7 +12,7 @@ services:
       - ${PROXY_WEB_PORT}:${PROXY_WEB_PORT}
       - ${PROXY_WEB_FILE_PORT}:${PROXY_WEB_FILE_PORT}
     volumes:
-      - mtest-mitm:/src/.mitmproxy
+      - ./mtest:/src/mtest
     depends_on:
       - postgres
 
