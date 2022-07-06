@@ -42,3 +42,4 @@ tasks:
       - command -v pre-commit
       - command -v yamllint
       - command -v go
+      - command -v jq
