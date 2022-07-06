@@ -30,6 +30,7 @@ tasks:
   lima:stop:
     deps: [lima:install]
     desc: Stop lima.
+    ignore_error: true
     cmds:
       - limactl stop
     status:
