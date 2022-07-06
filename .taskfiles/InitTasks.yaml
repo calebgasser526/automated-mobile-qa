@@ -31,12 +31,14 @@ tasks:
         wget
         jq
         lima
+        java
         pre-commit
         prettier
         yamllint
         go
     status:
       - command -v lima
+      - command -v java
       - command -v wget
       - command -v prettier
       - command -v pre-commit
