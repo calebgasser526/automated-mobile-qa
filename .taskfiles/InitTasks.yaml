@@ -29,6 +29,7 @@ tasks:
     vars:
       DEPS: >-
         wget
+        jq
         lima
         pre-commit
         prettier
