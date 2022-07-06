@@ -93,8 +93,11 @@ tasks:
 
   android:test:
     desc: Run android tests only.
-    deps: [install, container:up, appium:start, android:run]
     cmds:
+      - task: install
+      - task: container:up
+      - task: appuim:start
+      - task: android:run
       - task: cert:android:install
       - task: test:run:android
       - defer: { task: restore }
