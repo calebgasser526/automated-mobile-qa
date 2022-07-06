@@ -146,6 +146,7 @@ tasks:
   down:
     deps: [lima:start]
     desc: Remove containers and networks created by project compose file.
+    ignore_error: true
     cmds:
       - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml down
 
