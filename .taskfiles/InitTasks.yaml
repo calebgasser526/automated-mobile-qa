@@ -32,6 +32,7 @@ tasks:
         jq
         lima
         java
+        openjdk
         pre-commit
         prettier
         yamllint
@@ -39,6 +40,7 @@ tasks:
     status:
       - command -v lima
       - command -v java
+      - command -v openjdk
       - command -v wget
       - command -v prettier
       - command -v pre-commit
