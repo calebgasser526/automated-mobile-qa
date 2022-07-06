@@ -45,6 +45,25 @@ def get_test_id():
     connection.close()
     return results
 
+def get_latest_test_data():
+    test_id = get_test_id()
+    connection = psycopg2.connect(dbname=os.environ['POSTGRES_DB'], user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'], host=host)
+    cursor = connection.cursor()
+    query_string = f"""SELECT info
+        FROM "proxy_request"
+        WHERE info ->> 'path' LIKE '/v1/import'
+        AND info ->> 'run_id' LIKE '{test_id}'
+    """
+    try:
+        cursor.execute(query_string)
+        data = cursor.fetchall()
+    except psycopg2.errors.InFailedSqlTransaction as e:
+        print(f"Error:\n{e}")
+
+    cursor.close()
+    connection.close()
+    return data
+
 def insert_to_table(table_name, info):
     connection = psycopg2.connect(dbname=os.environ['POSTGRES_DB'], user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'], host=host)
     cursor = connection.cursor()

@@ -96,7 +96,6 @@ tasks:
     deps: [install, container:up, appium:start, android:run]
     cmds:
       - task: cert:android:install
-      - task: proxy:setup
       - task: test:run:android
       - defer: { task: restore }
 
@@ -107,6 +106,7 @@ tasks:
       - task: container:proxy:rebuild
       - task: container:up
       - task: cert:android:install
+      - task: cert:system:install
       - task: proxy:setup
       - task: test:run:android
       - defer: { task: restore }

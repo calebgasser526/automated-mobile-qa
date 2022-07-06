@@ -1,5 +1,8 @@
 import time
+import json
+import pytest
 from mtest.common.appium_wrapper import Android
+from mtest.data import postgresql
 
 android = Android()
 
@@ -8,7 +11,16 @@ def test_zip_search():
     android.set_value("com.move.realtor.qa:id/search_edit_text", "66206")
     android.touch(x=1321, y=2745)
     android.click_element("com.move.realtor.qa:id/listSwitchViewBtn")
-    time.sleep(10)
+    time.sleep(30)
+
+@pytest.mark.depends(on=['test_zip_search'])
+def test_zip_search_data():
+    data = postgresql.get_latest_test_data()
+    print(data)
+    #for item in data:
+    #    for req in item[0]["batch"]:
+    #        print(req)
+    #
 
 
 #def test_save_search_srp():

@@ -385,12 +385,93 @@
       "type": "piechart"
     },
     {
-      "collapsed": false,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P44368ADAD746BC27"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 38,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.0.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT test_id\nFROM test_id\nORDER BY timestamp DESC\nLIMIT 1;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Latest Test ID",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 18
       },
       "id": 30,
       "panels": [],
@@ -398,1129 +479,1454 @@
       "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 19
       },
       "id": 21,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "pattern": "^.*::(.*)$",
+                    "result": {
+                      "index": 0,
+                      "text": "$1"
+                    }
+                  },
+                  "type": "regex"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 311
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "platform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 94
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 157
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 20
+          },
+          "id": 19,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["count"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "duration(seconds)"
+              }
+            ]
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'Android'\nAND info ->> 'outcome' = 'passed'\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "test_results",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Android - PASS",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "duration": 3,
+                  "outcome": 4,
+                  "platform": 0,
+                  "test": 2,
+                  "test_id": 1
+                },
+                "renameByName": {
+                  "duration": "duration(seconds)"
+                }
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "pattern": "^.*::(.*)$",
+                    "result": {
+                      "index": 0,
+                      "text": "$1"
+                    }
+                  },
+                  "type": "regex"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 311
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 176
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "platform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 94
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 157
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration(seconds)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 20
+          },
+          "id": 23,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["count"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'IOS'\nAND info ->> 'outcome' = 'passed'\nORDER BY 1",
+              "refId": "B",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "test_id",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "iOS - PASS",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "duration": 3,
+                  "outcome": 4,
+                  "platform": 0,
+                  "test": 2,
+                  "test_id": 1
+                },
+                "renameByName": {
+                  "duration": "duration(seconds)"
+                }
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "pattern": "^.*::(.*)$",
+                    "result": {
+                      "index": 0,
+                      "text": "$1"
+                    }
+                  },
+                  "type": "regex"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 311
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "platform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 94
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 157
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration(seconds)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 205
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 29
+          },
+          "id": 22,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["count"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'Android'\nAND info ->> 'outcome' = 'failed'\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "test_results",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Android - FAIL",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "duration": 3,
+                  "outcome": 4,
+                  "platform": 0,
+                  "test": 2,
+                  "test_id": 1
+                },
+                "renameByName": {
+                  "duration": "duration(seconds)"
+                }
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "pattern": "^.*::(.*)$",
+                    "result": {
+                      "index": 0,
+                      "text": "$1"
+                    }
+                  },
+                  "type": "regex"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 311
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 176
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "platform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 94
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 157
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "duration(seconds)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 29
+          },
+          "id": 24,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["count"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'IOS'\nAND info ->> 'outcome' = 'failed'\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "test_results",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "iOS - FAIL",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "duration": 3,
+                  "outcome": 4,
+                  "platform": 0,
+                  "test": 2,
+                  "test_id": 1
+                },
+                "renameByName": {
+                  "duration": "duration(seconds)"
+                }
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "table"
+        }
+      ],
       "title": "Appium Test Results",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "pattern": "^.*::(.*)$",
-                "result": {
-                  "index": 0,
-                  "text": "$1"
-                }
-              },
-              "type": "regex"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test_id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 311
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test"
-            },
-            "properties": [
-              {
-                "id": "custom.width"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "platform"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 94
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 157
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 17
-      },
-      "id": 19,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["count"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "duration(seconds)"
-          }
-        ]
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'Android'\nAND info ->> 'outcome' = 'passed'\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "test_results",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Android - PASS",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "duration": 3,
-              "outcome": 4,
-              "platform": 0,
-              "test": 2,
-              "test_id": 1
-            },
-            "renameByName": {
-              "duration": "duration(seconds)"
-            }
-          }
-        }
-      ],
-      "transparent": true,
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "pattern": "^.*::(.*)$",
-                "result": {
-                  "index": 0,
-                  "text": "$1"
-                }
-              },
-              "type": "regex"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test_id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 311
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 176
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "platform"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 94
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 157
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration(seconds)"
-            },
-            "properties": [
-              {
-                "id": "custom.width"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 17
-      },
-      "id": 23,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["count"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'IOS'\nAND info ->> 'outcome' = 'passed'\nORDER BY 1",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "test_id",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "iOS - PASS",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "duration": 3,
-              "outcome": 4,
-              "platform": 0,
-              "test": 2,
-              "test_id": 1
-            },
-            "renameByName": {
-              "duration": "duration(seconds)"
-            }
-          }
-        }
-      ],
-      "transparent": true,
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "pattern": "^.*::(.*)$",
-                "result": {
-                  "index": 0,
-                  "text": "$1"
-                }
-              },
-              "type": "regex"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test_id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 311
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test"
-            },
-            "properties": [
-              {
-                "id": "custom.width"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "platform"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 94
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 157
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration(seconds)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 205
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 26
-      },
-      "id": 22,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["count"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'Android'\nAND info ->> 'outcome' = 'failed'\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "test_results",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Android - FAIL",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "duration": 3,
-              "outcome": 4,
-              "platform": 0,
-              "test": 2,
-              "test_id": 1
-            },
-            "renameByName": {
-              "duration": "duration(seconds)"
-            }
-          }
-        }
-      ],
-      "transparent": true,
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "pattern": "^.*::(.*)$",
-                "result": {
-                  "index": 0,
-                  "text": "$1"
-                }
-              },
-              "type": "regex"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test_id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 311
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "test"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 176
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "platform"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 94
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 157
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration(seconds)"
-            },
-            "properties": [
-              {
-                "id": "custom.width"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 26
-      },
-      "id": 24,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["count"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  platform,\n  test_id,\n  (tr.info ->> 'node_id') as test,\n  ROUND((tr.info ->> 'duration')::FLOAT) duration\nFROM test_id ti\nJOIN test_results tr ON (tr.info ->> 'test_id') = ti.test_id\nWHERE platform = 'IOS'\nAND info ->> 'outcome' = 'failed'\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "test_results",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "iOS - FAIL",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "duration": 3,
-              "outcome": 4,
-              "platform": 0,
-              "test": 2,
-              "test_id": 1
-            },
-            "renameByName": {
-              "duration": "duration(seconds)"
-            }
-          }
-        }
-      ],
-      "transparent": true,
-      "type": "table"
-    },
-    {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 20
+      },
+      "id": 32,
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "json-view",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "pattern": "^.*::(.*)$",
+                    "result": {
+                      "index": 0,
+                      "text": "$1"
+                    }
+                  },
+                  "type": "regex"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "channel"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 87
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "run_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 306
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 90
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "outcome"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 96
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "platform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 94
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 34
+          },
+          "id": 35,
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT ti.platform,\npr.info ->> 'run_id' as run_id,\n(tr.info ->> 'node_id') as test,\ntr.info ->> 'outcome' as outcome,\n(elem ->> 'properties') as properties\n-- keys.*,\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'run_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'run_id'\nCROSS JOIN json_array_elements(pr.info -> 'content' -> 'batch') elem -- , json_object_keys(elem #> '{properties}') AS keys (mykey)\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\nAND elem -> 'properties' IS NOT NULL\n",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "timeColumn": "time",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Analytics Calls",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "json-view",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "pattern": "^.*::(.*)$",
+                    "result": {
+                      "index": 0,
+                      "text": "$1"
+                    }
+                  },
+                  "type": "regex"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "channel"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 87
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "run_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 306
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "test"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 90
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "outcome"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 96
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "platform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 94
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 42
+          },
+          "id": 36,
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT ti.platform,\npr.info ->> 'run_id' as run_id,\n(tr.info ->> 'node_id') as test,\ntr.info ->> 'outcome' as outcome,\npr.info -> 'content' ->> 'batch' as batched_data\n-- keys.*,\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'run_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'run_id'\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\n",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "timeColumn": "time",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Raw Analytics Calls",
+          "type": "table"
+        }
+      ],
+      "title": "Analytics Call Data",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
       },
       "id": 14,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "json-view",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 153
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 51
+          },
+          "id": 16,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "time_series",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info ->> 'run_id' as run_id,\n  info ->> 'timestamp' as request_timestamp,\n  info ->> 'host' as host,\n  info ->> 'port' as port,\n  info ->> 'method' as method,\n  info ->> 'schema' as schema,\n  info ->> 'authority' as authority,\n  info ->> 'path' as path,\n  info ->> 'http_version' as http_version,\n  info ->> 'headers' as headers,\n  info ->> 'content' as content,\n  info ->> 'trailers' as trailers,\n  info ->> 'timestamp_start' as timestamp_start,\n  info ->> 'timestamp_end' as timestamp_end\nFROM proxy_request\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "proxy_request",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Request Data",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "json-view",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 153
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 60
+          },
+          "id": 17,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "time_series",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info ->> 'run_id' as run_id,\n  info ->> 'timestamp' as request_timestamp,\n  info ->> 'http_version' as http_version,\n  info ->> 'status_code' as status_code,\n  info ->> 'reason' as reason,\n  info ->> 'headers' as headers,\n  info ->> 'content' as content,\n  info ->> 'trailers' as trailers,\n  info ->> 'timestamp_start' as timestamp_start,\n  info ->> 'timestamp_end' as timestamp_end\nFROM proxy_response\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "proxy_request",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Response Data",
+          "type": "table"
+        }
+      ],
       "title": "Formated Proxy Data",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "json-view",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Time"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 153
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 34
-      },
-      "id": 16,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info ->> 'run_id' as run_id,\n  info ->> 'timestamp' as request_timestamp,\n  info ->> 'host' as host,\n  info ->> 'port' as port,\n  info ->> 'method' as method,\n  info ->> 'schema' as schema,\n  info ->> 'authority' as authority,\n  info ->> 'path' as path,\n  info ->> 'http_version' as http_version,\n  info ->> 'headers' as headers,\n  info ->> 'content' as content,\n  info ->> 'trailers' as trailers,\n  info ->> 'timestamp_start' as timestamp_start,\n  info ->> 'timestamp_end' as timestamp_end\nFROM proxy_request\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "proxy_request",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Request Data",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "json-view",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Time"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 153
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 43
-      },
-      "id": 17,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info ->> 'run_id' as run_id,\n  info ->> 'timestamp' as request_timestamp,\n  info ->> 'http_version' as http_version,\n  info ->> 'status_code' as status_code,\n  info ->> 'reason' as reason,\n  info ->> 'headers' as headers,\n  info ->> 'content' as content,\n  info ->> 'trailers' as trailers,\n  info ->> 'timestamp_start' as timestamp_start,\n  info ->> 'timestamp_end' as timestamp_end\nFROM proxy_response\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "proxy_request",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Response Data",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 22
       },
       "id": 10,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "json-view",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 161
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 70
+          },
+          "id": 6,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": false,
+              "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info\nFROM proxy_request\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "proxy_request",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Request Data (Raw)",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P44368ADAD746BC27"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "json-view",
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 156
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 70
+          },
+          "id": 8,
+          "interval": "1s",
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.0.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P44368ADAD746BC27"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": false,
+              "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info\nFROM proxy_response\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["info"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "proxy_response",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Response Data (Raw)",
+          "type": "table"
+        }
+      ],
       "title": "Raw Proxy Data",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "json-view",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 161
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 53
-      },
-      "id": 6,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info\nFROM proxy_request\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "proxy_request",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Request Data (Raw)",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P44368ADAD746BC27"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "json-view",
-            "filterable": true,
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 156
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 53
-      },
-      "id": 8,
-      "interval": "1s",
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P44368ADAD746BC27"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  \"timestamp\" AS \"time\",\n  info\nFROM proxy_response\nWHERE\n  $__timeFilter(\"timestamp\")\nORDER BY 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["info"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "proxy_response",
-          "timeColumn": "\"timestamp\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Response Data (Raw)",
-      "type": "table"
     }
   ],
   "refresh": "",
@@ -1552,6 +1958,6 @@
   "timezone": "",
   "title": "Mobile Automated Testing",
   "uid": "L4n6-Y3nz",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }

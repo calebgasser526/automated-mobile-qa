@@ -1,4 +1,5 @@
 pytest
+pytest-depends
 Appium-Python-Client==2.4.0
 mitmproxy==8.0.0
 requests
