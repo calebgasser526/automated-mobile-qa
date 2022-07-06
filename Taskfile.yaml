@@ -96,7 +96,7 @@ tasks:
     cmds:
       - task: install
       - task: container:up
-      - task: appuim:start
+      - task: appium:start
       - task: android:run
       - task: cert:android:install
       - task: test:run:android
