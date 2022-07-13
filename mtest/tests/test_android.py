@@ -1,26 +1,28 @@
 import time
-import json
 import pytest
 from mtest.common.appium_wrapper import Android
 from mtest.data import postgresql
+from appium.webdriver.common.appiumby import AppiumBy
 
 android = Android()
 
-def test_zip_search():
-    android.click_element("com.move.realtor.qa:id/on_boarding_location")
-    android.set_value("com.move.realtor.qa:id/search_edit_text", "66206")
+def test_appium_zip_search():
+    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/on_boarding_location")')
+    android.set_value(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/search_edit_text")', "66206")
     android.touch(x=1321, y=2745)
-    android.click_element("com.move.realtor.qa:id/listSwitchViewBtn")
+    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/listSwitchViewBtn")')
     time.sleep(30)
 
-@pytest.mark.depends(on=['test_zip_search'])
-def test_zip_search_data():
-    data = postgresql.get_latest_test_data()
-    print(data)
-    #for item in data:
-    #    for req in item[0]["batch"]:
-    #        print(req)
-    #
+@pytest.mark.depends(on=['test_appium_zip_search'])
+def test_data_zip_search():
+    data = postgresql.get_latest_test_data_properties('test_android.py::test_appium_zip_search')
+    has_pagename = False
+    for item in data:
+        if "pageName" in item:
+            has_pagename = True
+            print(item)
+            assert item["pageName"] == "for_sale:srp_list"
+    assert has_pagename
 
 
 #def test_save_search_srp():

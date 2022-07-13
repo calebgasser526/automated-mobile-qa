@@ -2,18 +2,18 @@
 version: "3"
 
 tasks:
-  local:test:android:
+  test:android:
     desc: Run android appium test.
     cmds:
       - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python ./mtest/set_test_id.py
-      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_android.py
+      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/tests/test_android.py
         ignore_error: true
 
-  local:test:ios:
+  test:ios:
     desc: Run ios appium test.
     cmds:
       - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python ./mtest/set_test_id.py
-      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/appium_test/test_ios.py
+      - cmd: source {{.PROJECT_DIR}}/.venv/bin/activate && python -m pytest -s ./mtest/tests/test_ios.py
         ignore_error: true
 
   requirements:mtest:

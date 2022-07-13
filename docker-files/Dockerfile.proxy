@@ -38,5 +38,7 @@ COPY hack/container_init.sh .
 RUN ./container_init.sh
 RUN task python:requirements:mtest
 
+RUN apt -y autoremove
+RUN apt -y clean
 # Start proxy
 CMD ["./proxy_wrapper.sh"]

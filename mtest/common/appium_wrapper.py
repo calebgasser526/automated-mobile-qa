@@ -1,4 +1,5 @@
 import os
+import base64
 from mtest.common.appium_helpers import wait_for_element
 from appium import webdriver
 from appium.options.ios import XCUITestOptions
@@ -10,6 +11,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.touch_action import TouchAction
 
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+
 
 
 class IOS:
@@ -18,23 +24,37 @@ class IOS:
         self.options = XCUITestOptions().\
             set_capability('autoAcceptAlerts', 'true').\
             set_capability('platformName', 'iOS').\
-            set_capability('platformVersion', '14.0').\
+            set_capability('platformVersion', '15.0').\
             set_capability('deviceName', 'iPhone Simulator').\
-            set_capability('app', os.path.abspath('./Realtor.com.app')).\
+            set_capability('app', os.environ["IOS_APP"]).\
             set_capability('automationName', "XCUITest")
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
+        cert_file = open("/src/mitmproxy-ca-cert.pem")
+        cert = {
+            "content": str(base64.b64encode(cert_file.read().encode("utf-8")), "utf-8"),
+            "isRoot": True
+        }
+        cert_file.close()
+        print("Cert file")
+        print(cert["content"])
+        self.driver.execute_script("mobile:installCertificate", cert)
 
-    def click_element(self, resourceId):
-        element = wait_for_element(self.driver, AppiumBy.IOS_UIAUTOMATION, value=f'new UiSelector().resourceId("{resourceId}")')
+    def click_element(self, by, resourceId):
+        element = wait_for_element(self.driver, by, resourceId)
         element.click()
 
-    def set_value(self, resourceId, value):
-        element = wait_for_element(self.driver, AppiumBy.IOS_UIAUTOMATION, value=f'new UiSelector().resourceId("{resourceId}")')
-        element.click()
-        element.set_value(value)
+    def set_value(self, by, resourceId, value):
+        element = wait_for_element(self.driver, by, resourceId)
+        element.send_keys(value)
 
     def touch(self, x, y):
-        TouchAction(self.driver).tap(x=1321, y=2745).perform()
+        actions = ActionChains(self.driver)
+        actions.w3c_actions = ActionBuilder(self.driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch"))
+        actions.w3c_actions.pointer_action.move_to_location(x, y)
+        actions.w3c_actions.pointer_action.pointer_down()
+        actions.w3c_actions.pointer_action.pause(0.1)
+        actions.w3c_actions.pointer_action.release()
+        actions.perform()
 
 class Android:
 
@@ -49,14 +69,20 @@ class Android:
             set_capability('automationName', "UiAutomator2")
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
 
-    def click_element(self, resourceId):
-        element = wait_for_element(self.driver, AppiumBy.ANDROID_UIAUTOMATOR, value=f'new UiSelector().resourceId("{resourceId}")')
+    def click_element(self, by, resourceId):
+        element = wait_for_element(self.driver, by, resourceId)
         element.click()
 
-    def set_value(self, resourceId, value):
-        element = wait_for_element(self.driver, AppiumBy.ANDROID_UIAUTOMATOR, value=f'new UiSelector().resourceId("{resourceId}")')
+    def set_value(self, by, resourceId, value):
+        element = wait_for_element(self.driver, by, resourceId)
         element.click()
         element.set_value(value)
 
     def touch(self, x, y):
-        TouchAction(self.driver).tap(x=1321, y=2745).perform()
+        actions = ActionChains(self.driver)
+        actions.w3c_actions = ActionBuilder(self.driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch"))
+        actions.w3c_actions.pointer_action.move_to_location(x, y)
+        actions.w3c_actions.pointer_action.pointer_down()
+        actions.w3c_actions.pointer_action.pause(0.1)
+        actions.w3c_actions.pointer_action.release()
+        actions.perform()

@@ -16,7 +16,7 @@ vars:
   IOS_TEST_UUID:
     sh: echo "{{.IOS_APP_FILE}}__$(uuidgen)"
   PROXY_TARGET: "Wi-fi"
-  PROXY_IP: "127.0.0.1"
+  PROXY_IP: $PROXY_HOST
   PROXY: "{{.PROXY_IP}}:{{.PROXY_PORT}}"
   PROXY_PORT: $PROXY_PORT
   PROXY_WEB_HOST: $PROXY_WEB_HOST
@@ -46,7 +46,7 @@ vars:
     "appWaitActivity": "com.move.realtor.onboarding.OnBoardingActivity",
     "automationName": "UiAutomator2"
   IOS_INSPECTOR: |
-    'autoAcceptAlerts': 'true',
+    "autoAcceptAlerts": "true",
     "platformName": "iOS",
     "platformVersion": "15.0",
     "deviceName": "iPhone Simulator",

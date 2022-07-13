@@ -38,10 +38,10 @@ class DataCapture:
                 content = flow.request.get_text().decode('unicode_escape')
         else:
             content = {}
-        run_id = postgresql.get_test_id()
+        test_id = postgresql.get_test_id()
 
         payload = {
-                "run_id": str(run_id),
+                "test_id": str(test_id),
                 "timestamp": int(time.time()),
                 "url": flow.request.url,
                 "host": flow.request.host,
@@ -69,10 +69,10 @@ class DataCapture:
                 content = flow.response.get_text().decode('unicode_escape')
         else:
             content = {}
-        run_id = postgresql.get_test_id()
+        test_id = postgresql.get_test_id()
 
         payload = {
-                "run_id": str(run_id),
+                "test_id": str(test_id),
                 "timestamp": int(time.time()),
                 "http_version": flow.response.http_version,
                 "status_code": flow.response.status_code,
