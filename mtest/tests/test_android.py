@@ -16,13 +16,11 @@ def test_appium_zip_search():
 @pytest.mark.depends(on=['test_appium_zip_search'])
 def test_data_zip_search():
     data = postgresql.get_latest_test_data_properties('test_android.py::test_appium_zip_search')
-    has_pagename = False
+    page_names = []
     for item in data:
         if "pageName" in item:
-            has_pagename = True
-            print(item)
-            assert item["pageName"] == "for_sale:srp_list"
-    assert has_pagename
+            page_names.append(item["pageName"])
+    assert "for_sale:srp_list" in page_names
 
 
 #def test_save_search_srp():

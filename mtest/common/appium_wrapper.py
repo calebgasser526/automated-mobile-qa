@@ -66,7 +66,8 @@ class Android:
             set_capability('appPackage', "com.move.realtor.qa").\
             set_capability('appActivity', "com.move.realtor.splash.SplashActivity").\
             set_capability('appWaitActivity', "com.move.realtor.onboarding.OnBoardingActivity").\
-            set_capability('automationName', "UiAutomator2")
+            set_capability('automationName', "UiAutomator2").\
+            set_capability("autoDissmissAlerts", "true")
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
 
     def click_element(self, by, resourceId):

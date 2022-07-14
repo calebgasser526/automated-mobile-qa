@@ -78,19 +78,6 @@ tasks:
       - echo "iOS"
       - echo '{{.IOS_INSPECTOR}}'
 
-  all:tests:
-    desc: Run all tests.
-    deps: [install]
-    cmds:
-      - task: proxy:setup
-      - task: appium:start
-      - task: android:run
-      - task: cert:system:install
-      - task: test:run:android
-      - task: test:run:ios
-      - defer: { task: restore }
-      - task: report
-
   android:test:
     desc: Run android tests only.
     cmds:
@@ -120,7 +107,6 @@ tasks:
     cmds:
       - cmd: xcrun simctl shutdown all
         ignore_error: true
-      - task: cert:system:install
       - task: proxy:setup
       - task: test:run:ios
       - xcrun simctl shutdown all
