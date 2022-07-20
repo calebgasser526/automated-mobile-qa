@@ -21,23 +21,29 @@ from selenium.webdriver.common.actions.pointer_input import PointerInput
 class IOS:
 
     def __init__(self):
+        cert_file = open("/src/mitmproxy-ca-cert.cer")
         self.options = XCUITestOptions().\
             set_capability('autoAcceptAlerts', 'true').\
             set_capability('platformName', 'iOS').\
             set_capability('platformVersion', '15.0').\
             set_capability('deviceName', 'iPhone Simulator').\
             set_capability('app', os.environ["IOS_APP"]).\
-            set_capability('automationName', "XCUITest")
+            set_capability('automationName', "XCUITest").\
+            set_capability('appium:enforceFreshSimulatorCreation', 'true').\
+            set_capability('appium:shutdownOtherSimulators', 'true').\
+            set_capability('appium:customSSLCert', cert_file.read()).\
+            set_capability('fullReset', 'true').\
+            set_capability('clearSystemFiles', 'true')
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
-        cert_file = open("/src/mitmproxy-ca-cert.pem")
-        cert = {
-            "content": str(base64.b64encode(cert_file.read().encode("utf-8")), "utf-8"),
-            "isRoot": True
-        }
+        #cert = {
+        #    "content": str(base64.b64encode(cert_file.read().encode("utf-8")), "utf-8"),
+        #    "isRoot": True
+        #}
         cert_file.close()
-        print("Cert file")
-        print(cert["content"])
-        self.driver.execute_script("mobile:installCertificate", cert)
+        #self.driver.execute_script("mobile:installCertificate", cert)
+
+    def __del__(self):
+        self.driver.quit()
 
     def click_element(self, by, resourceId):
         element = wait_for_element(self.driver, by, resourceId)
@@ -56,6 +62,9 @@ class IOS:
         actions.w3c_actions.pointer_action.release()
         actions.perform()
 
+    def pressSearchKey(self):
+        self.click_element(AppiumBy.IOS_PREDICATE, 'label == "search"')
+
 class Android:
 
     def __init__(self):
@@ -69,6 +78,9 @@ class Android:
             set_capability('automationName', "UiAutomator2").\
             set_capability("autoDissmissAlerts", "true")
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
+
+    def __del__(self):
+        self.driver.quit()
 
     def click_element(self, by, resourceId):
         element = wait_for_element(self.driver, by, resourceId)
@@ -87,3 +99,7 @@ class Android:
         actions.w3c_actions.pointer_action.pause(0.1)
         actions.w3c_actions.pointer_action.release()
         actions.perform()
+
+
+    def pressSearchKey(self):
+        self.driver.execute_script('mobile: performEditorAction', {'action': 'search'})

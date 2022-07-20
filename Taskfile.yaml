@@ -96,7 +96,6 @@ tasks:
       - task: container:proxy:rebuild
       - task: container:up
       - task: cert:android:install
-      - task: cert:system:install
       - task: proxy:setup
       - task: test:run:android
       - defer: { task: restore }
@@ -105,8 +104,9 @@ tasks:
     desc: Run iOS tests only.
     deps: [install, container:up, appium:start]
     cmds:
-      - cmd: xcrun simctl shutdown all
+      - cmd: pkill SimLaunchHost
         ignore_error: true
+      - task: cert:system:install
       - task: proxy:setup
       - task: test:run:ios
       - xcrun simctl shutdown all
@@ -115,6 +115,8 @@ tasks:
   restore:
     desc: Restore state after running tests.
     cmds:
+      - defer: pkill Simulator
+      - defer: pkill SimLaunchHost
       - defer: { task: android:stop }
       - defer: { task: appium:stop }
       - defer: { task: proxy:restore }
