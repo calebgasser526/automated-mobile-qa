@@ -48,41 +48,8 @@ def test_data_save_search_srp():
     assert "search" in save_items
 
 
-def test_appium_submit_lead_srp():
+def test_appium_save_listing_srp():
     pass
-
-@pytest.mark.depends(on=['test_appium_submit_lead_srp'])
-def test_data_submit_lead_srp():
-    pass
-
-def test_appium_navigate_listing():
-    pass
-
-@pytest.mark.depends(on=['test_appium_navigate_listing'])
-def test_data_navigate_listing():
-    pass
-
-def test_appium_save_listing_ldp():
-    pass
-
-@pytest.mark.depends(on=['test_appium_save_listing_ldp'])
-def test_data_save_listing_ldp():
-    pass
-
-def test_appium_submit_text_lead_ldp():
-    pass
-
-@pytest.mark.depends(on=['test_appium_submit_text_lead_ldp'])
-def test_data_submit_text_lead_ldp():
-    pass
-
-def test_appium_submit_lead_ldp():
-    pass
-
-@pytest.mark.depends(on=['test_appium_submit_lead_ldp'])
-def test_data_submit_lead_ldp():
-    pass
-
 #  it("saves a listing on SRP", async () => {
 #    await driver.pause(5000);
 #    let el1 = await driver.$(
@@ -97,7 +64,17 @@ def test_data_submit_lead_ldp():
 #
 #    await new Promise((resolve) => setTimeout(resolve, 5000));
 #  });
-#
+
+@pytest.mark.depends(on=['test_appium_save_listing_srp'])
+def test_data_save_listing_srp():
+    pass
+
+def test_appium_submit_lead_srp():
+    pass
+
+@pytest.mark.depends(on=['test_appium_submit_lead_srp'])
+def test_data_submit_lead_srp():
+    pass
 #  it("submits a lead on SRP", async () => {
 #    let el1 = await driver.$(
 #      "//android.widget.Button[contains(@resource-id, 'lead_button')]"
@@ -138,7 +115,8 @@ def test_data_submit_lead_ldp():
 #
 #    await new Promise((resolve) => setTimeout(resolve, 5000));
 #  });
-#
+
+def test_appium_navigate_listing():
 #  it("navigates to a listing", async () => {
 #    let el1 = await driver.$(
 #      "//android.widget.ImageView[contains(@resource-id, 'listingImageView')]"
@@ -147,7 +125,14 @@ def test_data_submit_lead_ldp():
 #
 #    await new Promise((resolve) => setTimeout(resolve, 5000));
 #  });
-#
+    pass
+
+@pytest.mark.depends(on=['test_appium_navigate_listing'])
+def test_data_navigate_listing():
+    pass
+
+def test_appium_save_listing_ldp():
+    pass
 #  it("saves a listing on LDP", async () => {
 #    let el1 = await driver.$(
 #      "//android.widget.Button[contains(@content-desc, 'Save listing')]"
@@ -156,7 +141,13 @@ def test_data_submit_lead_ldp():
 #
 #    await new Promise((resolve) => setTimeout(resolve, 5000));
 #  });
-#
+
+@pytest.mark.depends(on=['test_appium_save_listing_ldp'])
+def test_data_save_listing_ldp():
+    pass
+
+def test_appium_submit_text_lead_ldp():
+    pass
 #  it("submits a text lead on LDP", async () => {
 #    let el1 = await driver.$(
 #      "//android.widget.Button[contains(@content-desc, 'Text')]"
@@ -181,7 +172,13 @@ def test_data_submit_lead_ldp():
 #
 #    await new Promise((resolve) => setTimeout(resolve, 5000));
 #  });
-#
+
+@pytest.mark.depends(on=['test_appium_submit_text_lead_ldp'])
+def test_data_submit_text_lead_ldp():
+    pass
+
+def test_appium_submit_lead_ldp():
+    pass
 #  it("submits a lead on LDP", async () => {
 #    await driver.pause(5000);
 #    let el1 = await driver.$(
@@ -224,3 +221,7 @@ def test_data_submit_lead_ldp():
 #
 #    await new Promise((resolve) => setTimeout(resolve, 5000));
 #  });
+
+@pytest.mark.depends(on=['test_appium_submit_lead_ldp'])
+def test_data_submit_lead_ldp():
+    pass
