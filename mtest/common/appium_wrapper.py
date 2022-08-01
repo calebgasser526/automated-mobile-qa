@@ -1,4 +1,5 @@
 import os
+import time
 import base64
 from mtest.common.appium_helpers import wait_for_element
 from appium import webdriver
@@ -21,26 +22,24 @@ from selenium.webdriver.common.actions.pointer_input import PointerInput
 class IOS:
 
     def __init__(self):
-        cert_file = open("/src/mitmproxy-ca-cert.cer")
+        #cert_file = open("/src/mitmproxy-ca-cert.pem")
         self.options = XCUITestOptions().\
             set_capability('autoAcceptAlerts', 'true').\
             set_capability('platformName', 'iOS').\
             set_capability('platformVersion', '15.0').\
-            set_capability('deviceName', 'iPhone Simulator').\
+            set_capability('deviceName', 'appium').\
+            set_capability('udid', os.environ['IOS_UDID']).\
             set_capability('app', os.environ["IOS_APP"]).\
             set_capability('automationName', "XCUITest").\
-            set_capability('appium:enforceFreshSimulatorCreation', 'true').\
-            set_capability('appium:shutdownOtherSimulators', 'true').\
-            set_capability('appium:customSSLCert', cert_file.read()).\
-            set_capability('fullReset', 'true').\
-            set_capability('clearSystemFiles', 'true')
+            set_capability('noReset', 'true')
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
         #cert = {
         #    "content": str(base64.b64encode(cert_file.read().encode("utf-8")), "utf-8"),
         #    "isRoot": True
         #}
-        cert_file.close()
+        #cert_file.close()
         #self.driver.execute_script("mobile:installCertificate", cert)
+
 
     def __del__(self):
         self.driver.quit()
@@ -80,7 +79,10 @@ class Android:
         self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
 
     def __del__(self):
-        self.driver.quit()
+        time.sleep(30)
+        if (self.driver):
+            self.driver.quit()
+        time.sleep(5)
 
     def click_element(self, by, resourceId):
         element = wait_for_element(self.driver, by, resourceId)

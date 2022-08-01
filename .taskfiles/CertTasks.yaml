@@ -1,11 +1,6 @@
 ---
 version: "3"
 
-vars:
-  CERT_NAME: "mitmproxy"
-  CERT_FILE: "mitmproxy-ca-cert.cer"
-  CERT_PATH: "{{.PROJECT_DIR}}/{{.CERT_FILE}}"
-
 tasks:
   clean:
     desc: Remove mimtproxy certificates.
@@ -26,9 +21,14 @@ tasks:
     deps: [get]
     desc: Install certificate to system.
     cmds:
+      - task: system:remove
+      - sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
+
+  system:remove:
+    desc: Remove MITM Proxy certificate from the system.
+    cmds:
       - cmd: sudo security delete-certificate -c mitmproxy /Library/Keychains/System.keychain
         ignore_error: true
-      - sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
 
   android:install:
     deps: [get]

@@ -1,0 +1,59 @@
+version: "3"
+
+tasks:
+  setup:
+    desc: Setup iOS simulator for appium.
+    cmds:
+      - task: create
+      - task: boot
+      - task: open
+      - task: cert:install
+      - task: shutdown
+
+  run:
+    desc: Run iOS simulator for appium.
+    cmds:
+      - task: create
+      - task: boot
+      - task: open
+      - task: cert:install
+
+  teardown:
+    desc: Teardown and remove appium iOS simulator.
+    cmds:
+      - task: shutdown
+      - task: delete
+      - cmd: pkill SimLaunchHost
+        ignore_error: true
+      - defer: pkill Simulator
+
+  create:
+    desc: Create the iOS simulator for appium to use.
+    cmds:
+      - xcrun simctl create appium "iPhone 13" "iOS15"
+
+  boot:
+    desc: Boot appium iOS simulator
+    cmds:
+      - xcrun simctl boot appium
+
+  open:
+    desc: Open iOS appium simulator
+    cmds:
+      - open -a Simulator --args -CurrentDeviceUDID $IOS_UDID
+
+  cert:install:
+    desc: Install cert into iOS appium simulator
+    cmds:
+      - xcrun simctl keychain booted add-root-cert {{.CERT_PATH}}
+
+  delete:
+    desc: Destroy appium iOS simulator
+    cmds:
+      - xcrun simctl delete appium
+
+  shutdown:
+    desc: Shutdown appium iOS simulator
+    cmds:
+      - cmd: xcrun simctl shutdown appium
+        ignore_error: true

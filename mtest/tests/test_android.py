@@ -7,11 +7,10 @@ from appium.webdriver.common.appiumby import AppiumBy
 
 def test_appium_zip_search():
     android = Android()
-    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/on_boarding_location")')
-    android.set_value(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/search_edit_text")', "66206")
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
+    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/search_edit_text', "66206")
     android.pressSearchKey()
-    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/listSwitchViewBtn")')
-    time.sleep(30)
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/listSwitchViewBtn')
 
 
 @pytest.mark.depends(on=['test_appium_zip_search'])
@@ -26,12 +25,11 @@ def test_data_zip_search():
 
 def test_appium_save_search_srp():
     android = Android()
-    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/on_boarding_location")')
-    android.set_value(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/search_edit_text")', "66206")
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
+    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/search_edit_text', "66206")
     android.pressSearchKey()
-    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/listSwitchViewBtn")')
-    android.click_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.move.realtor.qa:id/save_search_top")')
-    time.sleep(30)
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/listSwitchViewBtn')
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/save_search_top')
 
 
 @pytest.mark.depends(on=['test_appium_save_search_srp'])
@@ -41,29 +39,21 @@ def test_data_save_search_srp():
     save_items = []
     for item in data:
         if "pageName" in item:
-            if "saveItem" in item:
-                page_names.append(item["pageName"])
-                save_items.append(item["saveItem"])
+            page_names.append(item["pageName"])
+        if "saveItem" in item:
+            save_items.append(item["saveItem"])
     assert "for_sale:srp_list" in page_names
     assert "search" in save_items
 
 
 def test_appium_save_listing_srp():
-    pass
-#  it("saves a listing on SRP", async () => {
-#    await driver.pause(5000);
-#    let el1 = await driver.$(
-#      "//android.widget.ImageButton[contains(@content-desc, 'Save listing')][1]"
-#    );
-#    await el1.click();
-#
-#    let el2 = await driver.$(
-#      "//android.widget.ImageButton[contains(@content-desc, 'Unsave listing')][1]"
-#    );
-#    await el2.click();
-#
-#    await new Promise((resolve) => setTimeout(resolve, 5000));
-#  });
+    android = Android()
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
+    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/search_edit_text', "66206")
+    android.pressSearchKey()
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/listSwitchViewBtn')
+    android.click_element(AppiumBy.ACCESSIBILITY_ID, "Save listing")
+    #android.click_element(AppiumBy.ACCESSIBILITY_ID, "Unsave listing")
 
 @pytest.mark.depends(on=['test_appium_save_listing_srp'])
 def test_data_save_listing_srp():

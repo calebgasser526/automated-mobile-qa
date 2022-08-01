@@ -36,6 +36,9 @@ vars:
   ORIG_SECURE_PROXY_PORT:
     sh: networksetup -getsecurewebproxy 'Wi-fi' | awk '/Port:/{print $NF}'
   PYTHON_VERSION: "3.9.12"
+  CERT_NAME: "mitmproxy"
+  CERT_FILE: "mitmproxy-ca-cert.pem"
+  CERT_PATH: "{{.PROJECT_DIR}}/{{.CERT_FILE}}"
   ANDROID_INSPECTOR: |
     "platformName": "Android",
     "platformVersion": "11",
@@ -59,6 +62,7 @@ includes:
   node: .taskfiles/NodeTasks.yaml
   cert: .taskfiles/CertTasks.yaml
   android: .taskfiles/AndroidTasks.yaml
+  ios: .taskfiles/iOSTasks.yaml
   proxy: .taskfiles/ProxyTasks.yaml
   test: .taskfiles/TestsTasks.yaml
   appium: .taskfiles/AppiumTasks.yaml
@@ -89,6 +93,12 @@ tasks:
       - task: test:run:android
       - defer: { task: restore }
 
+  android:test:fresh:
+    desc: Run android tests only.
+    cmds:
+      - task: container:destroy
+      - task: android:test
+
   android:test:build:
     desc: Run android tests only, rebuilding the project container.
     deps: [install, appium:start, android:run]
@@ -104,19 +114,24 @@ tasks:
     desc: Run iOS tests only.
     deps: [install, container:up, appium:start]
     cmds:
-      - cmd: pkill SimLaunchHost
-        ignore_error: true
       - task: cert:system:install
       - task: proxy:setup
+      - task: ios:setup
       - task: test:run:ios
-      - xcrun simctl shutdown all
+      - defer: { task: ios:teardown }
       - defer: { task: restore }
+
+  ios:test:fresh:
+    desc: Run iOS tests only.
+    deps: [install, container:up, appium:start]
+    cmds:
+      - task: container:destroy
+      - task: ios:test
 
   restore:
     desc: Restore state after running tests.
     cmds:
-      - defer: pkill Simulator
-      - defer: pkill SimLaunchHost
+      - defer: { task: cert:system:remove }
       - defer: { task: android:stop }
       - defer: { task: appium:stop }
       - defer: { task: proxy:restore }

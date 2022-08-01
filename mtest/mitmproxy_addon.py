@@ -16,14 +16,6 @@ def convert_headers(headers):
                     output[str(item[0])] = str(item[1])
     return output
 
-def convert_content(content):
-    if isinstance(content, str):
-        try:
-            content = json.loads(content)
-        except TypeError as e:
-            ctx.log(e)
-    return content
-
 class DataCapture:
     def __init__(self):
         pass
@@ -31,14 +23,15 @@ class DataCapture:
     def request(self, flow):
         headers = convert_headers(flow.request.headers.fields)
         trailers = convert_headers(flow.request.trailers)
+        test_id = postgresql.get_test_id()
+        content = {}
         if flow.request.get_text() is not None:
             try:
-                content = json.loads(flow.request.get_text())
+                content = json.loads(flow.request.content)
             except:
-                content = flow.request.get_text().decode('unicode_escape')
+                content = flow.request.content.decode('utf-8').replace('u\0000', '')
         else:
             content = {}
-        test_id = postgresql.get_test_id()
 
         payload = {
                 "test_id": str(test_id),
@@ -62,14 +55,15 @@ class DataCapture:
     def response(self, flow):
         headers = convert_headers(flow.response.headers.fields)
         trailers = convert_headers(flow.response.trailers)
+        test_id = postgresql.get_test_id()
+        content = {}
         if flow.response.get_text() is not None:
             try:
-                content = json.loads(flow.request.get_text())
+                content = json.loads(flow.response.content)
             except:
-                content = flow.response.get_text().decode('unicode_escape')
+                content = flow.response.content.decode('utf-8').replace('u\0000', '')
         else:
             content = {}
-        test_id = postgresql.get_test_id()
 
         payload = {
                 "test_id": str(test_id),

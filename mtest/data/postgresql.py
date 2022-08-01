@@ -31,7 +31,10 @@ def get_test_id():
     """
     try:
         cursor.execute(query_string)
-        results = cursor.fetchone()[0]
+        try:
+            results = cursor.fetchone()[0]
+        except:
+            results = "NO_TEST_ID"
     except psycopg2.errors.InFailedSqlTransaction as e:
         print(f"Error:\n{e}")
     cursor.close()
