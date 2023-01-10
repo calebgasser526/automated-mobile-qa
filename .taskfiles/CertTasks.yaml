@@ -24,6 +24,12 @@ tasks:
       - task: system:remove
       - sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.CERT_FILE}}
 
+  system:install:local:
+    desc: Install certificate to system.
+    cmds:
+      - task: system:remove
+      - sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain {{.PROJECT_DIR}}/.mitmproxy/mitmproxy-ca-cert.pem
+
   system:remove:
     desc: Remove MITM Proxy certificate from the system.
     cmds:

@@ -21,4 +21,4 @@ def test_data_zip_search():
     for item in data:
         if "pageName" in item:
             page_names.append(item["pageName"])
-    assert "for_sale:srp_list" in page_names
+    assert "on_boarding:location" in page_names

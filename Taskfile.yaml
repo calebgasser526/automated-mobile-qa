@@ -3,6 +3,18 @@ version: "3"
 dotenv: ["config.env"]
 
 vars:
+  # Terminal colors
+  HEADER: '\033[95m'
+  OKBLUE: '\033[94m'
+  OKCYAN: '\033[96m'
+  OKGREEN: '\033[92m'
+  WARNING: '\033[93m'
+  FAIL: '\033[91m'
+  ENDC: '\033[0m'
+  BOLD: '\033[1m'
+  UNDERLINE: '\033[4m'
+  CLEAR: '\033[39m'
+  # Project convfigs
   CONFIG_FILE: "config.env"
   PROJECT_NAME: $PROJECT_NAME
   PROJECT_DIR:
@@ -18,7 +30,6 @@ vars:
   PROXY_TARGET: "Wi-fi"
   PROXY_IP: $PROXY_HOST
   PROXY: "{{.PROXY_IP}}:{{.PROXY_PORT}}"
-  PROXY_PORT: $PROXY_PORT
   PROXY_WEB_HOST: $PROXY_WEB_HOST
   PROXY_WEB_PORT: $PROXY_WEB_PORT
   PROXY_WEB_FILE_PORT: $PROXY_WEB_FILE_PORT
@@ -72,15 +83,28 @@ tasks:
   default:
     desc: Run all tests.
     cmds:
-      - echo {{.PROXY_WEB_PORT}}
+      - task: android:test
+      - task: ios:test
 
   inspector:
     desc: Get inspector settings.
+    silent: true
     cmds:
-      - echo "Android:"
-      - echo '{{.ANDROID_INSPECTOR}}'
-      - echo "iOS"
-      - echo '{{.IOS_INSPECTOR}}'
+      - echo -e "{{.OKGREEN}} Copy and paste the corisponding settings to your appium inspector. {{.CLEAR}}" && tput init
+      - echo -e "{{.OKBLUE}}Android (do not copy this line):{{.CLEAR}}"
+      - echo -e '{{.OKCYAN}}{{.ANDROID_INSPECTOR}}{{.CLEAR}}'
+      - echo -e "{{.OKBLUE}}iOS (do not copy this line):{{.CLEAR}}"
+      - echo -e '{{.OKCYAN}}{{.IOS_INSPECTOR}}{{.CLEAR}}'
+
+  android:dev:
+    desc: Run android with proxy and appium for developing tests (No tests are run).
+    cmds:
+      - task: install
+      - task: container:up
+      - task: appium:start
+      - task: container:grafana
+      - task: android:run
+      - task: cert:android:install
 
   android:test:
     desc: Run android tests only.
@@ -88,13 +112,14 @@ tasks:
       - task: install
       - task: container:up
       - task: appium:start
+      - task: container:grafana
       - task: android:run
       - task: cert:android:install
       - task: test:run:android
       - defer: { task: restore }
 
-  android:test:fresh:
-    desc: Run android tests only.
+  android:test:new:
+    desc: Run android tests only AND clear all previous data.
     cmds:
       - task: container:destroy
       - task: android:test
@@ -105,28 +130,54 @@ tasks:
     cmds:
       - task: container:proxy:rebuild
       - task: container:up
+      - task: container:grafana
       - task: cert:android:install
       - task: proxy:setup
       - task: test:run:android
       - defer: { task: restore }
 
+  ios:dev:
+    desc: Run iOS with proxy and appuim for developing tests (No tests are run).
+    deps: [install, appium:start]
+    cmds:
+      - task: python:requirements:mtest
+      - task: container:up:local
+      - task: container:grafana:local
+      - task: proxy:run:local:web
+      - task: cert:system:install:local
+      - task: ios:setup
+      - task: proxy:setup:local
+      - task: ios:run
+
   ios:test:
     desc: Run iOS tests only.
-    deps: [install, container:up, appium:start]
+    deps: [install, appium:start]
     cmds:
-      - task: cert:system:install
-      - task: proxy:setup
+      - task: python:requirements:mtest
+      - task: container:up:local
+      - task: container:grafana:local
+      - task: proxy:run:local:web
+      - task: cert:system:install:local
       - task: ios:setup
+      - task: proxy:setup:local
       - task: test:run:ios
-      - defer: { task: ios:teardown }
-      - defer: { task: restore }
+      - defer: { task: restore:local }
 
-  ios:test:fresh:
-    desc: Run iOS tests only.
-    deps: [install, container:up, appium:start]
+  ios:test:new:
+    desc: Run iOS tests only AND clear all previous data.
+    deps: [install, appium:start]
     cmds:
       - task: container:destroy
       - task: ios:test
+
+  proxy:dev:
+    desc: Run proxy with NO emualtors or tests. (For debugging)
+    deps: [install, appium:start]
+    cmds:
+      - task: proxy:setup
+      - task: container:up
+      - task: cert:system:install
+      - task: container:mitmproxy
 
   restore:
     desc: Restore state after running tests.
@@ -134,22 +185,29 @@ tasks:
       - defer: { task: cert:system:remove }
       - defer: { task: android:stop }
       - defer: { task: appium:stop }
+      - defer: { task: ios:teardown }
       - defer: { task: proxy:restore }
+
+  restore:local:
+    desc: Restore state after running tests.
+    cmds:
+      - defer: { task: cert:system:remove }
+      - defer: { task: android:stop }
+      - defer: { task: appium:stop }
+      - defer: { task: ios:teardown }
+      - defer: { task: proxy:restore }
+      - pkill mitmproxy
+
+  restore:clear:
+    desc: Restore state after running tests AND clear all previous data.
+    cmds:
+      - task: container:destroy
+      - defer: { task: restore }
 
   install:
     desc: Install requirements for running tests.
     cmds:
       - task: init:install
-
-  open:proxy:
-    desc: Opens the proxy UI.
-    cmds:
-      - open http://{{.PROXY_WEB_HOST}}:{{.PROXY_WEB_PORT}}
-
-  open:proxy:files:
-    desc: Opens the file server on the proxy.
-    cmds:
-      - open http://{{.PROXY_WEB_HOST}}:{{.PROXY_WEB_FILE_PORT}}
 
   clean:
     desc: Remove all generated project files.

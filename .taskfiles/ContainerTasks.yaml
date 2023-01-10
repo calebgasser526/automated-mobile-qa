@@ -23,16 +23,22 @@ tasks:
     deps: [lima:install]
     desc: Start lima.
     cmds:
-      - limactl start --tty=false
+      - limactl start --name=default --tty=false
     status:
       - '[[ $(limactl list | tr -s '' '' | awk ''$2=="Running"{print $2}'') ]]'
+
+  lima:start:proxy:
+    deps: [lima:install]
+    desc: Start lima.
+    cmds:
+      - http_proxy={{.PROXY_HOST}}:{{.PROXY_PORT}} limactl start --name=default --tty=false
 
   lima:stop:
     deps: [lima:install]
     desc: Stop lima.
     ignore_error: true
     cmds:
-      - limactl stop
+      - limactl stop default
     status:
       - '[[ $(limactl list | tr -s '' '' | awk ''$2=="Stopped"{print $2}'') ]]'
 
@@ -112,36 +118,19 @@ tasks:
     deps: [lima:start]
     desc: Build project container (with debugging.)
     cmds:
-      - task: down
       - lima nerdctl build -t mtest {{.PROJECT_DIR}} --debug-full
-
-  up:build:
-    deps: [lima:start]
-    desc: Spin up project compose file and build containers.
-    cmds:
-      - task: down
-      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --build
-
-  up:build:debug:
-    deps: [lima:start]
-    desc: Spin up project compose file and build containers (with debugging.)
-    cmds:
-      - task: down
-      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --build --debug-full
 
   up:
     deps: [lima:start]
     desc: Spin up project compose file.
     cmds:
-      - task: down
       - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d
-      - task: dashboard
 
-  up:debug:
+  up:local:
     deps: [lima:start]
-    desc: Spin up project compose file (with debugging.)
+    desc: Spin up project compose file.
     cmds:
-      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml up -d --debug-full
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose-local.yaml up -d
 
   down:
     deps: [lima:start]
@@ -149,6 +138,13 @@ tasks:
     ignore_error: true
     cmds:
       - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose.yaml down
+
+  down:local:
+    deps: [lima:start]
+    desc: Remove containers and networks created by project compose file.
+    ignore_error: true
+    cmds:
+      - lima nerdctl compose --env-file {{.CONFIG_FILE}} -f {{.PROJECT_DIR}}/compose-local.yaml down
 
   destroy:
     deps: [lima:start]
@@ -161,8 +157,31 @@ tasks:
     cmds:
       - ./hack/check-running-container.sh
 
-  dashboard:
+  check:local:
+    desc: Check if containers are running.
+    cmds:
+      - ./hack/check-running-container.sh "local"
+
+  mitmproxy:local:
+    deps: [check:local]
+    desc: Open mitmproxy dashboard.
+    cmds:
+      - open "http://localhost:{{.PROXY_WEB_PORT}}"
+
+  mitmproxy:
     deps: [check]
+    desc: Open mitmproxy dashboard.
+    cmds:
+      - open "http://localhost:{{.PROXY_WEB_PORT}}"
+
+  grafana:
+    deps: [check]
+    desc: Open grafana dashboard.
+    cmds:
+      - open "http://localhost:{{.GRAFANA_PORT}}/?orgId=1&kiosk"
+
+  grafana:local:
+    deps: [check:local]
     desc: Open grafana dashboard.
     cmds:
       - open "http://localhost:{{.GRAFANA_PORT}}/?orgId=1&kiosk"

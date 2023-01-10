@@ -1,27 +1,5 @@
 ---
 services:
-  mtest:
-    dns:
-      - "8.8.8.8"
-    network_mode: "bridge"
-    build:
-      context: .
-      dockerfile: ./docker-files/Dockerfile.proxy
-    container_name: mtest
-    image: mtest:latest
-    restart: always
-    ports:
-      - ${PROXY_PORT}:${PROXY_PORT}
-      - ${PROXY_WEB_PORT}:${PROXY_WEB_PORT}
-      - ${PROXY_WEB_FILE_PORT}:${PROXY_WEB_FILE_PORT}
-    volumes:
-      - ./mtest:/src/mtest
-      - ./config.env:/src/config.env
-      - ./Taskfile.yaml:/src/Taskfile.yaml
-      - ./.taskfiles:/src/.taskfiles
-    depends_on:
-      - postgres
-
   grafana:
     network_mode: "bridge"
     image: grafana/grafana-oss:9.0.1

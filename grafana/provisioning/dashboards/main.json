@@ -775,7 +775,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT pr.info -> 'content' ->> 'batch' as batched_data\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'test_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'test_id'\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\n",
+          "rawSql": "SELECT pr.info -> 'content' ->> 'batch' as batched_data\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'test_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'test_id'\nAND tr.info ->> 'node_id' NOT LIKE '%test_data%'\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\n",
           "refId": "A",
           "select": [
             [
@@ -2766,7 +2766,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 90
+                    "value": 365
                   }
                 ]
               },
@@ -2824,7 +2824,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT ti.platform,\npr.info ->> 'test_id' as test_id,\n(tr.info ->> 'node_id') as test,\ntr.info ->> 'outcome' as outcome,\n(elem ->> 'properties') as properties\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'test_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'test_id'\nCROSS JOIN json_array_elements(CAST(pr.info -> 'content' ->> 'batch' AS json)) elem\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\nAND elem -> 'properties' IS NOT NULL\n",
+              "rawSql": "SELECT ti.platform,\npr.info ->> 'test_id' as test_id,\n(tr.info ->> 'node_id') as test,\ntr.info ->> 'outcome' as outcome,\n(elem ->> 'properties') as properties\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'test_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'test_id'\nCROSS JOIN json_array_elements(CAST(pr.info -> 'content' ->> 'batch' AS json)) elem\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\nAND tr.info ->> 'node_id' NOT LIKE '%test_data%'\nAND elem -> 'properties' IS NOT NULL\n",
               "refId": "A",
               "select": [
                 [
@@ -2980,7 +2980,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT ti.platform,\npr.info ->> 'test_id' as test_id,\n(tr.info ->> 'node_id') as test,\ntr.info ->> 'outcome' as outcome,\npr.info -> 'content' ->> 'batch' as batched_data\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'test_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'test_id'\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\n",
+              "rawSql": "SELECT ti.platform,\npr.info ->> 'test_id' as test_id,\n(tr.info ->> 'node_id') as test,\ntr.info ->> 'outcome' as outcome,\npr.info -> 'content' ->> 'batch' as batched_data\nFROM proxy_request pr\nJOIN test_results tr on tr.info ->> 'test_id' = pr.info ->> 'test_id'\nJOIN test_id ti on ti.test_id = pr.info ->> 'test_id'\nAND tr.info ->> 'node_id' NOT LIKE '%test_data%'\nWHERE pr.info -> 'content' -> 'batch' IS NOT NULL\n",
               "refId": "A",
               "select": [
                 [
@@ -3461,6 +3461,6 @@
   "timezone": "",
   "title": "Mobile Automated Testing",
   "uid": "L4n6-Y3nz",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }

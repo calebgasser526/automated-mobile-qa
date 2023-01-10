@@ -1,6 +1,7 @@
 import os
 import time
 import base64
+import platform
 from mtest.common.appium_helpers import wait_for_element
 from appium import webdriver
 from appium.options.ios import XCUITestOptions
@@ -18,6 +19,9 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 
 
+host = "localhost"
+if platform.system() == "Linux":
+    host = "host.lima.internal"
 
 class IOS:
 
@@ -28,11 +32,11 @@ class IOS:
             set_capability('platformName', 'iOS').\
             set_capability('platformVersion', '15.0').\
             set_capability('deviceName', 'appium').\
-            set_capability('udid', os.environ['IOS_UDID']).\
             set_capability('app', os.environ["IOS_APP"]).\
+            set_capability('udid', os.environ["IOS_UDID"]).\
             set_capability('automationName', "XCUITest").\
             set_capability('noReset', 'true')
-        self.driver = webdriver.Remote('http://host.lima.internal:4723/wd/hub', options=self.options)
+        self.driver = webdriver.Remote(f'http://{host}:4723/wd/hub', options=self.options)
         #cert = {
         #    "content": str(base64.b64encode(cert_file.read().encode("utf-8")), "utf-8"),
         #    "isRoot": True
@@ -102,6 +106,8 @@ class Android:
         actions.w3c_actions.pointer_action.release()
         actions.perform()
 
+    def pressDoneKey(self):
+        self.driver.execute_script('mobile: performEditorAction', {'action': 'done'})
 
     def pressSearchKey(self):
         self.driver.execute_script('mobile: performEditorAction', {'action': 'search'})

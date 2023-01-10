@@ -1,4 +1,4 @@
-FROM python:slim-bullseye
+FROM python:3.10-bullseye
 
 ARG PROXY_WEB_PORT
 ARG PROXY_PORT

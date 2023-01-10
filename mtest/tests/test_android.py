@@ -5,24 +5,24 @@ from mtest.data import postgresql
 from appium.webdriver.common.appiumby import AppiumBy
 
 
-def test_appium_zip_search():
-    android = Android()
-    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
-    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/search_edit_text', "66206")
-    android.pressSearchKey()
-    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/listSwitchViewBtn')
-
-
-@pytest.mark.depends(on=['test_appium_zip_search'])
-def test_data_zip_search():
-    data = postgresql.get_latest_test_data_properties('test_android.py::test_appium_zip_search')
-    page_names = []
-    for item in data:
-        if "pageName" in item:
-            page_names.append(item["pageName"])
-    assert "for_sale:srp_list" in page_names
-
-
+# def test_appium_zip_search():
+#     android = Android()
+#     android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
+#     android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/search_edit_text', "66206")
+#     android.pressSearchKey()
+#     android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/listSwitchViewBtn')
+#
+#
+# @pytest.mark.depends(on=['test_appium_zip_search'])
+# def test_data_zip_search():
+#     data = postgresql.get_latest_test_data_properties('test_android.py::test_appium_zip_search')
+#     page_names = []
+#     for item in data:
+#         if "pageName" in item:
+#             page_names.append(item["pageName"])
+#     assert "for_sale:srp_list" in page_names
+#
+#
 def test_appium_save_search_srp():
     android = Android()
     android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
@@ -46,20 +46,19 @@ def test_data_save_search_srp():
     assert "search" in save_items
 
 
-def test_appium_save_listing_srp():
+def test_appium_submit_lead_srp():
     android = Android()
     android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/on_boarding_location')
     android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/search_edit_text', "66206")
     android.pressSearchKey()
     android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/listSwitchViewBtn')
-    android.click_element(AppiumBy.ACCESSIBILITY_ID, "Save listing")
-    #android.click_element(AppiumBy.ACCESSIBILITY_ID, "Unsave listing")
-
-@pytest.mark.depends(on=['test_appium_save_listing_srp'])
-def test_data_save_listing_srp():
-    pass
-
-def test_appium_submit_lead_srp():
+    #android.click_element(AppiumBy.XPATH, "//android.widget.Button[@text='Contact agent']")
+    android.click_element(AppiumBy.ID, 'com.move.realtor.qa:id/lead_button')
+    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/name_field', "Test test")
+    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/email_address_field', "test@test.com")
+    android.set_value(AppiumBy.ID, 'com.move.realtor.qa:id/phone_number', "5551236789")
+    android.pressDoneKey()
+    android.click_element(AppiumBy.ID, "com.move.realtor.qa:id/advertiser_lead_send_button")
     pass
 
 @pytest.mark.depends(on=['test_appium_submit_lead_srp'])

@@ -3,7 +3,7 @@
 current_proxy_try=0
 max_proxy_try=6
 
-while ! nc -z $PROXY_HOST $PROXY_WEB_FILE_PORT 2>/dev/null && (( $current_proxy_try <= $max_proxy_try )); do
+while ! nc -z $PROXY_HOST $PROXY_WEB_FILE_PORT 2>/dev/null && (( $current_proxy_try <= $max_proxy_try-1 )); do
   ((current_proxy_try=current_proxy_try+1))
   echo "[==] Proxy server unreachable. Waiting then trying again. (${current_proxy_try}/${max_proxy_try})"
   sleep 10

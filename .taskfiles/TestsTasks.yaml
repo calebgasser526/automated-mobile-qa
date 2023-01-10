@@ -22,17 +22,18 @@ tasks:
 
   run:ios:
     desc: Run tests for iOS.
+    env:
+      IOS_UDID:
+        sh: echo $(xcrun simctl list --json | jq --raw-output '.devices."com.apple.CoreSimulator.SimRuntime.iOS-15-0"[] | select(.name=="appium") | .udid')
+      TEST_PLATFORM: "IOS"
+      TEST_ID:
+        sh: echo "{{.IOS_APP_FILE}}__$(uuidgen)"
+      ANDROID_APK: ""
+      IOS_APP:
+        sh: echo "{{.PROJECT_DIR}}/Realtor.com.app"
     cmds:
-      - cmd: echo ${http_proxy}
-      - cmd: echo ${https_proxy}
       - cmd: |
-          lima nerdctl exec \
-          -e IOS_UDID={{.IOS_UDID}} \
-          -e TEST_PLATFORM=IOS \
-          -e TEST_ID={{.IOS_TEST_UUID}} \
-          -e ANDROID_APK={{.ANDROID_APK}} \
-          -e IOS_APP={{.IOS_APP}} \
-          mtest task python:test:ios
+          task python:test:ios
         ignore_error: true
     vars:
       IOS_UDID:

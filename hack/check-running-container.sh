@@ -25,15 +25,25 @@ current_wait=0
 
 sleep 3
 container_status
-while (( $wait_tries < $max_wait )) && ready_check "$mtest_status" || ready_check "$grafana_status" || ready_check "$postgres_status" || ready_check "$adminer_status"; do
-  container_status
-  ((current_wait=current_wait+wait_tries))
-  sleep 3
-done
-
-if ready_check "$mtest_status" ||  ready_check "$grafana_status" || ready_check "$postgres_status" || ready_check "$adminer_status"; then
-  echo "[Error] Not all contianers started successfully!"
-  exit 1
+if [[ "$1" == "local" ]]; then
+  while (( $wait_tries < $max_wait )) && ready_check "$grafana_status" || ready_check "$postgres_status" || ready_check "$adminer_status"; do container_status
+    ((current_wait=current_wait+wait_tries))
+    sleep 3
+  done
+  if ready_check "$grafana_status" || ready_check "$postgres_status" || ready_check "$adminer_status"; then
+    echo "[Error] Not all contianers started successfully!"
+    exit 1
+  fi
+else
+  while (( $wait_tries < $max_wait )) && ready_check "$mtest_status" || ready_check "$grafana_status" || ready_check "$postgres_status" || ready_check "$adminer_status"; do container_status
+    ((current_wait=current_wait+wait_tries))
+    sleep 3
+  done
+  if ready_check "$mtest_status" ||  ready_check "$grafana_status" || ready_check "$postgres_status" || ready_check "$adminer_status"; then
+    echo "[Error] Not all contianers started successfully!"
+    exit 1
+  fi
 fi
+
 
 echo "Containers ready!"

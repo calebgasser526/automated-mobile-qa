@@ -45,12 +45,12 @@ tasks:
   cert:install:
     desc: Install cert into iOS appium simulator
     cmds:
-      - xcrun simctl keychain booted add-root-cert {{.CERT_PATH}}
+      - xcrun simctl keychain booted add-root-cert {{.PROJECT_DIR}}/.mitmproxy/mitmproxy-ca-cert.pem
 
   delete:
     desc: Destroy appium iOS simulator
     cmds:
-      - xcrun simctl delete appium
+      - ./hack/remove-ios-simulators.sh
 
   shutdown:
     desc: Shutdown appium iOS simulator
