@@ -1,3 +1,4 @@
+.mitmproxy
 .venv
 node_modules
 .android_local_sdk
