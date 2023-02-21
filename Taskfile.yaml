@@ -105,6 +105,19 @@ tasks:
       - task: container:grafana
       - task: android:run
       - task: cert:android:install
+      - task: android:apk:install
+
+  android:manual:
+    desc: Run android with proxy in "manual mode".
+    cmds:
+      - task: install
+      - task: container:up
+      - task: appium:start
+      - task: container:mitmproxy
+      - task: container:grafana
+      - task: android:run
+      - task: cert:android:install
+      - task: android:apk:install
 
   android:test:
     desc: Run android tests only.

@@ -38,6 +38,11 @@ env:
   ADB: "{{.ADB}}"
 
 tasks:
+  apk:install:
+    desc: Install app (apk file) to android emulator.
+    cmds:
+      - cmd: yes | {{.ADB}} install {{.ANDROID_APK_FILE}}
+
   stop:
     desc: Stop running android emulator.
     cmds:
