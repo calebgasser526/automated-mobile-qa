@@ -163,7 +163,6 @@ tasks:
       - ./hack/check-running-container.sh "local"
 
   mitmproxy:local:
-    deps: [check:local]
     desc: Open mitmproxy dashboard.
     cmds:
       - open "http://localhost:{{.PROXY_WEB_PORT}}"
