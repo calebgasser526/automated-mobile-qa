@@ -169,19 +169,16 @@ tasks:
       - open "http://localhost:{{.PROXY_WEB_PORT}}"
 
   mitmproxy:
-    deps: [check]
     desc: Open mitmproxy dashboard.
     cmds:
       - open "http://localhost:{{.PROXY_WEB_PORT}}"
 
   grafana:
-    deps: [check]
     desc: Open grafana dashboard.
     cmds:
       - open "http://localhost:{{.GRAFANA_PORT}}/?orgId=1&kiosk"
 
   grafana:local:
-    deps: [check:local]
     desc: Open grafana dashboard.
     cmds:
       - open "http://localhost:{{.GRAFANA_PORT}}/?orgId=1&kiosk"

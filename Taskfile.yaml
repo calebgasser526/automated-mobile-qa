@@ -112,7 +112,6 @@ tasks:
     cmds:
       - task: install
       - task: container:up
-      - task: appium:start
       - task: container:mitmproxy
       - task: container:grafana
       - task: android:run

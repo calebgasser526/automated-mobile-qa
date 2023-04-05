@@ -3,7 +3,8 @@ version: "3"
 vars:
   NAME: "android-30"
   PLATFORM: "android-30"
-  IMAGE: "system-images;android-30;google_apis;x86"
+  IMAGE:
+    sh: ./hack/get-android-image-by-arch.sh
   DEVICE: "pixel_4_xl"
   ANDROID_LOCAL_SDK: "{{.PROJECT_DIR}}/.android_local_sdk"
   ANDROID_HOME: "{{.ANDROID_LOCAL_SDK}}"

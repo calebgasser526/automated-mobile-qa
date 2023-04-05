@@ -34,6 +34,8 @@ COPY .taskfiles ./.taskfiles/
 COPY proxy_wrapper.sh .
 COPY conftest.py .
 COPY hack/container_init.sh .
+RUN mkdir ./hack
+COPY hack/get-android-image-by-arch.sh ./hack
 
 RUN ./container_init.sh
 RUN task python:requirements:mtest
